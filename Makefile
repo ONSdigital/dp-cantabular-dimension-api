@@ -26,6 +26,10 @@ debug:
 	go build -tags 'debug' $(LDFLAGS) -o $(BINPATH)/dp-cantabular-dimension-api
 	HUMAN_LOG=1 DEBUG=1 $(BINPATH)/dp-cantabular-dimension-api
 
+PHONY: debug-run
+debug-run:
+	HUMAN_LOG=1 DEBUG=1 go run -tags 'debug' $(LDFLAGS) main.go
+
 .PHONY: test
 test:
 	go test -race -cover ./...

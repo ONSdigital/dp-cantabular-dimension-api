@@ -1,130 +1,282 @@
 swagger: "2.0"
-info:
-  title: "dp-cantabular-dimension-api"
-  description: "A service providing endpoints for retrieving dimension and geography information for Cantabular datasets"
-  version: 1.0.0
-  license:
-    name: "Open Government Licence v3.0"
-    url: "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
 basePath: "/v1"
+info:
+  description: ""
+  version: "1.0.0"
+  title: "Query geography"
 schemes:
-  - http
-tags:
-  - name: "hello"
-  - name: "private"
+- "http"
 paths:
-  /hello:
+  /area-types:
     get:
-      tags:
-        - hello
-      summary: Example hello world endpoint
-      description: Returns an example payload.
+      summary: "Get list of area types for given Cantabular Blob "
+      description: ""
       produces:
-        - application/json
+      - "application/json"
+      parameters:
+        - name: cantabular_blob
+          type: string
+          in: query
+          required: false
       responses:
         200:
-          description: OK
+          description: "area types returned successfully"
           schema:
-            $ref: "#/definitions/HelloResponse"
-        500:
-          $ref: '#/responses/InternalError'
-
-  /health:
+            $ref: '#/definitions/GetAreaTypesResponse'
+  /area-types/{area-type}:
     get:
-      tags:
-        - private
-      summary: "Returns API's health status"
-      description: "Returns health status of the API and checks on dependent services"
+      parameters:
+      - name: area-type
+        type: string
+        in: path
+        required: true
+      - name: q
+        type: string
+        in: query
+        required: false
+      summary: "Get categories/values for given area type"
+      description: ""
       produces:
-        - application/json
+      - "application/json"
       responses:
         200:
-          description: "Successfully returns OK status with checks of dependent services"
+          description: "Categories for area type returned"
           schema:
-            $ref: "#/definitions/Health"
-        429:
-          description: "Services warming up or degraded (at least one check in WARNING or CRITICAL status)"
-        500:
-          $ref: "#/responses/InternalError"
-
-responses:
-  InternalError:
-    description: "Failed to process the request due to an internal error"
-
+            $ref: '#/definitions/GetAreaTypeResponse'
+  /areas:
+    get:
+      parameters:
+      - name: area-type
+        type: string
+        in: query
+        required: true
+      summary: "Get categories/values for given area type"
+      description: ""
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "Categories for area type returned"
+          schema:
+            $ref: '#/definitions/GetAreasResponse'
+  /area-types/{area-type}/parents:
+    get:
+      summary: "Get list of parents for given area type"
+      description: ""
+      produces:
+      - "application/json"
+      parameters:
+        - name: area-type
+          type: string
+          in: path
+          required: true
+      responses:
+        200:
+          description: "parent area types returned successfully"
+          schema:
+            $ref: '#/definitions/GetAreaTypeParentsResponse'
+  /dimensions:
+    get:
+      summary: "Get list of geography dimensions for given Cantabular Blob "
+      description: ""
+      produces:
+      - "application/json"
+      parameters:
+        - name: cantabular_blob
+          type: string
+          in: query
+          required: true
+      responses:
+        200:
+          description: "dimensions returned successfully"
+          schema:
+            $ref: '#/definitions/GetDimensionsResponse'
+  /dimension/{dimension}/options:
+    get:
+      summary: "Get list of options for given dimension "
+      description: ""
+      produces:
+      - "application/json"
+      parameters:
+        - name: dimension
+          type: string
+          in: path
+          required: true
+      responses:
+        200:
+          description: "area types returned successfully"
+          schema:
+            $ref: '#/definitions/GetDimensionOptionsResponse'
 definitions:
-  HelloResponse:
-    type: object
+  GetAreaTypesResponse:
+    description: "The response body containing all available area-types for a given Cantabular Blob"
     properties:
-      message:
-        type: string
-        description: "Message returned by hello world endpoint"
-        example: "Hello, world!"
-  Health:
-    type: object
-    properties:
-      status:
-        type: string
-        description: "The status of the API"
-        enum: ["OK", "WARNING", "CRITICAL"]
-      version:
-        type: object
-        properties:
-          build_time:
-            type: string
-            description: "The build date and time of the API"
-            example: "2020-06-11T12:49:20+01:00"
-          git_commit:
-            type: string
-            description: "The git commit hash of the API"
-            example: "7c2febbf2b818175112478d4ffbadbee1b654f63"
-          language:
-            type: string
-            description: "The programming language used to implement API"
-            example: "go"
-          language_version:
-            type: string
-            description: "The version of the programming language used to implement API"
-            example: "go1.14.3"
-          version:
-            type: string
-            description: "The version of API"
-            example: "1.0.0"
-      uptime:
-        type: string
-        description: "The uptime of API"
-        example: "34516"
-      start_time:
-        type: string
-        description: "The start date and time of API running"
-        example: "2020-06-11T11:49:21.520922Z"
-      checks:
+      area-types:
         type: array
         items:
-          $ref: '#/definitions/HealthChecker'
-  HealthChecker:
-    type: object
+          $ref: '#/definitions/AreaType'
+        example: 
+        - id: "electoral_wards"
+          label: "Electoral Wards or Divisions"
+        - id: "region"
+          label: "Region"
+        - id: "city"
+          label: "City"
+  GetAreaTypeResponse:
+    description: "The response body containing all available area-types for a given Cantabular Blob"
+    properties:
+      area-type:
+        allOf:
+          - $ref: '#/definitions/AreaType'
+          - example:
+              id: "electoral_wards"
+              label: "Electoral Wards or Divisions"
+  GetAreasResponse:
+    description: "The response body containing areas for a given area type"
+    properties:
+      areas:
+        type: array
+        items:
+          $ref: '#/definitions/Area'
+        example: 
+        - id: "STJGGC1"
+          label: "St John's"
+          parent: "Bromsgrove"
+        - id: "STJAB34"
+          label: "St John's"
+          parent: "Fyide"
+        - id: "SB498GFF4"
+          label: "Southborough North"
+          parent: "Tunbridge Wells"
+  GetAreaTypeParentsResponse:
+    description: "The response body containing parents of area-type"
+    properties:
+      area-types:
+        type: array
+        items:
+          $ref: '#/definitions/AreaType'
+        example: 
+        - id: "country"
+          label: "Country"
+        - id: "region"
+          label: "Region"
+        - id: "city"
+          label: "City"
+  AreaType:
+    properties:
+      id:
+        type: string
+      label:
+        type: string
+  Area:
+    properties:
+      id:
+        type: string
+      label:
+        type: string
+      parent:
+        type: string
+  GetDimensionsResponse:
+    description: "The response body containing dimensions for a given Cantabular Blob"
+    properties:
+      dimensions:
+        type: array
+        items:
+          $ref: '#/definitions/Dimension'
+        example: 
+        - name: "city"
+          code_list:
+            href: "http://localhost:22400/code-lists/city"
+            id: "city"
+          options:
+            href: "http://localhost:22000/datasets/cantabular-example-1/editions/2021/versions/1/dimensions/city/options"
+            id: "city"
+          version:
+            href: "http://localhost:22000/datasets/cantabular-example-1/editions/2021/versions/1"
+        - name: "region"
+          code_list:
+            href: "http://localhost:22400/code-lists/region"
+            id: "region"
+          options:
+            href: "http://localhost:22000/datasets/cantabular-example-1/editions/2021/versions/1/dimensions/region/options"
+            id: "city"
+          version:
+            href: "http://localhost:22000/datasets/cantabular-example-1/editions/2021/versions/1"
+  GetDimensionOptionsResponse:
+    description: "The response body containing options for a given Dimension"
+    properties:
+      options:
+        type: array
+        items:
+          $ref: '#/definitions/DimensionOption'
+        example: 
+        - label: "Liverpool"
+          code_list:
+            href: "http://localhost:22400/code-lists/city"
+            id: "city"
+          code:
+            href: "http://localhost:22400/code-lists/city/codes/1"
+            id: "1"
+          version:
+            href: "http://localhost:22000/datasets/cantabular-example-1/editions/2021/versions/1"            
+        - name: "Belfast"
+          code_list:
+            href: "http://localhost:22400/code-lists/city"
+            id: "city"
+          code:
+            href: "http://localhost:22400/code-lists/city/codes/2"
+            id: "2"
+          version:
+            href: "http://localhost:22000/datasets/cantabular-example-1/editions/2021/versions/1"
+  Dimension:
     properties:
       name:
         type: string
-        description: "The name of external service used by API"
-        enum: ["mongodb"]
-      status:
+      links:
+        type: object
+        properties:
+          code_list:
+            type: object
+            properties:
+              href:
+                type: string
+              id:
+                type: string
+          options:
+            type: object
+            properties:
+              href:
+                type: string
+              id:
+                type: string
+          version:
+            type: object
+            properties:
+              href:
+                type: string
+  DimensionOption:
+    properties:
+      name:
         type: string
-        description: "The status of the external service"
-        enum: ["OK", "WARNING", "CRITICAL"]
-      message:
-        type: string
-        description: "The message status of the external service"
-        example: "mongodb is OK"
-      last_checked:
-        type: string
-        description: "The last health check date and time of the external service"
-        example: "2020-06-11T11:49:50.330089Z"
-      last_success:
-        type: string
-        description: "The last successful health check date and time of the external service"
-        example: "2020-06-11T11:49:50.330089Z"
-      last_failure:
-        type: string
-        description: "The last failed health check date and time of the external service"
-        example: "2019-09-22T11:48:51.0000001Z"
+      links:
+        type: object
+        properties:
+          code_list:
+            type: object
+            properties:
+              href:
+                type: string
+              id:
+                type: string
+          code:
+            type: object
+            properties:
+              href:
+                type: string
+              id:
+                type: string
+          version:
+            type: object
+            properties:
+              href:
+                type: string

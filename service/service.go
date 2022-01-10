@@ -2,8 +2,8 @@ package service
 
 import (
 	"context"
+	"fmt"
 
-	"github.com/ONSdigital/dp-cantabular-dimension-api/api"
 	"github.com/ONSdigital/dp-cantabular-dimension-api/config"
 	"github.com/ONSdigital/log.go/v2/log"
 	"github.com/gorilla/mux"
@@ -12,65 +12,63 @@ import (
 
 // Service contains all the configs, server and clients to run the API
 type Service struct {
-	Config      *config.Config
-	Server      HTTPServer
-	Router      *mux.Router
-	Api         *api.API
-	ServiceList *ExternalServiceList
-	HealthCheck HealthChecker
+	config      *config.Config
+	server      HTTPServer
+	router      *mux.Router
+	healthCheck HealthChecker
 }
 
-// Run the service
-func Run(ctx context.Context, cfg *config.Config, serviceList *ExternalServiceList, buildTime, gitCommit, version string, svcErrors chan error) (*Service, error) {
+func New() *Service {
+	return &Service{}
+}
 
-	log.Info(ctx, "running service")
 
-	log.Info(ctx, "using service configuration", log.Data{"config": cfg})
+func (svc *Service) Init(ctx context.Context, buildTime, gitCommit, version string) error{
+	cfg, err := config.Get()
+	if err != nil{
+		return fmt.Errorf("failed to get config: %w", err)
+	}
 
-	// Get HTTP Server and ... // TODO: Add any middleware that your service requires
-	r := mux.NewRouter()
+	log.Info(ctx, "initialising service with config", log.Data{"config": cfg})
 
-	s := serviceList.GetHTTPServer(cfg.BindAddr, r)
+	svc.config = cfg
 
-	// TODO: Add other(s) to serviceList here
-
-	// Setup the API
-	a := api.Setup(ctx, r)
-
-	hc, err := serviceList.GetHealthCheck(cfg, buildTime, gitCommit, version)
-
+	svc.healthCheck, err = GetHealthCheck(cfg, buildTime, gitCommit, version)
 	if err != nil {
-		log.Fatal(ctx, "could not instantiate healthcheck", err)
-		return nil, err
+		return fmt.Errorf("failed to get healthcheck: %w", err)
 	}
 
-	if err := registerCheckers(ctx, hc); err != nil {
-		return nil, errors.Wrap(err, "unable to register checkers")
+	svc.buildRoutes()
+	svc.server = GetHTTPServer(cfg.BindAddr, svc.router)
+
+	if err := registerCheckers(ctx, svc.healthCheck); err != nil {
+		return fmt.Errorf("unable to register checkers: %w", err)
 	}
 
-	r.StrictSlash(true).Path("/health").HandlerFunc(hc.Handler)
-	hc.Start(ctx)
+	return nil
+}
 
-	// Run the http server in a new go-routine
+// Start the service
+func (svc *Service) Start(ctx context.Context, svcErrors chan error) {
+	svc.healthCheck.Start(ctx)
+
 	go func() {
-		if err := s.ListenAndServe(); err != nil {
-			svcErrors <- errors.Wrap(err, "failure in http listen and serve")
+		if err := svc.server.ListenAndServe(); err != nil {
+			svcErrors <- fmt.Errorf("failed to start main http server: %w", err)
 		}
 	}()
+}
 
-	return &Service{
-		Config:      cfg,
-		Router:      r,
-		Api:         a,
-		HealthCheck: hc,
-		ServiceList: serviceList,
-		Server:      s,
-	}, nil
+func (svc *Service) buildRoutes(){
+	r := mux.NewRouter()
+	r.StrictSlash(true).Path("/health").HandlerFunc(svc.healthCheck.Handler)
+
+	svc.router = r
 }
 
 // Close gracefully shuts the service down in the required order, with timeout
 func (svc *Service) Close(ctx context.Context) error {
-	timeout := svc.Config.GracefulShutdownTimeout
+	timeout := svc.config.GracefulShutdownTimeout
 	log.Info(ctx, "commencing graceful shutdown", log.Data{"graceful_shutdown_timeout": timeout})
 	ctx, cancel := context.WithTimeout(ctx, timeout)
 
@@ -81,12 +79,12 @@ func (svc *Service) Close(ctx context.Context) error {
 		defer cancel()
 
 		// stop healthcheck, as it depends on everything else
-		if svc.ServiceList.HealthCheck {
-			svc.HealthCheck.Stop()
+		if svc.healthCheck != nil {
+			svc.healthCheck.Stop()
 		}
 
 		// stop any incoming requests before closing any outbound connections
-		if err := svc.Server.Shutdown(ctx); err != nil {
+		if err := svc.server.Shutdown(ctx); err != nil {
 			log.Error(ctx, "failed to shutdown http server", err)
 			hasShutdownError = true
 		}
@@ -99,25 +97,18 @@ func (svc *Service) Close(ctx context.Context) error {
 
 	// timeout expired
 	if ctx.Err() == context.DeadlineExceeded {
-		log.Error(ctx, "shutdown timed out", ctx.Err())
-		return ctx.Err()
+		return fmt.Errorf("shutdown timed out: %w", ctx.Err())
 	}
 
 	// other error
 	if hasShutdownError {
-		err := errors.New("failed to shutdown gracefully")
-		log.Error(ctx, "failed to shutdown gracefully ", err)
-		return err
+		return errors.New("failed to shutdown gracefully")
 	}
 
 	log.Info(ctx, "graceful shutdown was successful")
 	return nil
 }
 
-func registerCheckers(ctx context.Context,
-	hc HealthChecker) (err error) {
-
-	// TODO: add other health checks here, as per dp-upload-service
-
+func registerCheckers(ctx context.Context, hc HealthChecker) error {
 	return nil
 }
