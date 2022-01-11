@@ -7,7 +7,7 @@ import (
 	"github.com/ONSdigital/dp-cantabular-dimension-api/config"
 	"github.com/ONSdigital/log.go/v2/log"
 	"github.com/gorilla/mux"
-	"github.com/pkg/errors"
+	"errors"
 )
 
 // Service contains all the configs, server and clients to run the API
