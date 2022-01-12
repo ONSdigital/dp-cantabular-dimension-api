@@ -2,6 +2,8 @@ package steps
 
 import (
 	"context"
+	"fmt"
+
 	"github.com/ONSdigital/dp-cantabular-dimension-api/config"
 	"github.com/ONSdigital/dp-cantabular-dimension-api/service"
 	"github.com/ONSdigital/dp-cantabular-dimension-api/service/mock"
@@ -13,17 +15,14 @@ import (
 
 type Component struct {
 	componenttest.ErrorFeature
-	svcList        *service.ExternalServiceList
 	svc            *service.Service
 	errorChan      chan error
 	Config         *config.Config
 	HTTPServer     *http.Server
 	ServiceRunning bool
-	apiFeature     *componenttest.APIFeature
 }
 
 func NewComponent() (*Component, error) {
-
 	c := &Component{
 		HTTPServer:     &http.Server{},
 		errorChan:      make(chan error),
@@ -37,20 +36,10 @@ func NewComponent() (*Component, error) {
 		return nil, err
 	}
 
-	initMock := &mock.InitialiserMock{
-		DoGetHealthCheckFunc: c.DoGetHealthcheckOk,
-		DoGetHTTPServerFunc:  c.DoGetHTTPServer,
-	}
-
-	c.svcList = service.NewServiceList(initMock)
-
-	c.apiFeature = componenttest.NewAPIFeature(c.InitialiseService)
-
 	return c, nil
 }
 
 func (c *Component) Reset() *Component {
-	c.apiFeature.Reset()
 	return c
 }
 
@@ -64,9 +53,9 @@ func (c *Component) Close() error {
 
 func (c *Component) InitialiseService() (http.Handler, error) {
 	var err error
-	c.svc, err = service.Run(context.Background(), c.Config, c.svcList, "1", "", "", c.errorChan)
-	if err != nil {
-		return nil, err
+	c.svc = service.New()
+	if err = c.svc.Init(context.Background(), "1", "", ""); err != nil{
+		return nil, fmt.Errorf("failed to initialise service: %w", err)
 	}
 
 	c.ServiceRunning = true
