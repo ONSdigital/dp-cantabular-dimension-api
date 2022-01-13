@@ -3,25 +3,26 @@ package service
 import (
 	"context"
 	"fmt"
+	"errors"
 
 	"github.com/ONSdigital/dp-cantabular-dimension-api/config"
 	"github.com/ONSdigital/log.go/v2/log"
-	"github.com/gorilla/mux"
-	"errors"
+
+	"github.com/go-chi/chi/v5"
 )
 
 // Service contains all the configs, server and clients to run the API
 type Service struct {
 	config      *config.Config
 	server      HTTPServer
-	router      *mux.Router
+	router      *chi.Mux
+	responder   Responder
 	healthCheck HealthChecker
 }
 
 func New() *Service {
 	return &Service{}
 }
-
 
 func (svc *Service) Init(ctx context.Context, buildTime, gitCommit, version string) error {
 	cfg, err := config.Get()
@@ -37,6 +38,8 @@ func (svc *Service) Init(ctx context.Context, buildTime, gitCommit, version stri
 	if err != nil {
 		return fmt.Errorf("failed to get healthcheck: %w", err)
 	}
+
+	svc.responder = GetResponder()
 
 	svc.buildRoutes()
 	svc.server = GetHTTPServer(cfg.BindAddr, svc.router)
@@ -57,13 +60,6 @@ func (svc *Service) Start(ctx context.Context, svcErrors chan error) {
 			svcErrors <- fmt.Errorf("failed to start main http server: %w", err)
 		}
 	}()
-}
-
-func (svc *Service) buildRoutes(){
-	r := mux.NewRouter()
-	r.StrictSlash(true).Path("/health").HandlerFunc(svc.healthCheck.Handler)
-
-	svc.router = r
 }
 
 // Close gracefully shuts the service down in the required order, with timeout
