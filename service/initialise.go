@@ -7,6 +7,7 @@ import (
 	"github.com/ONSdigital/dp-cantabular-dimension-api/responder"
 
 	"github.com/ONSdigital/dp-healthcheck/healthcheck"
+	"github.com/ONSdigital/dp-api-clients-go/v2/cantabular"
 	dphttp "github.com/ONSdigital/dp-net/http"
 )
 
@@ -30,4 +31,15 @@ var GetHealthCheck = func(cfg *config.Config, buildTime, gitCommit, version stri
 // GetResponder gets a http request responder
 var GetResponder = func() Responder {
 	return responder.New()
+}
+
+// GetCantabularClient gets and initialises the Cantabular Client
+var GetCantabularClient = func(cfg *config.Config) CantabularClient {
+	return cantabular.NewClient(
+		cantabular.Config{
+			Host:           cfg.CantabularURL,
+		},
+		dphttp.NewClient(),
+		nil,
+	)
 }

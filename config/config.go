@@ -13,6 +13,10 @@ type Config struct {
 	HealthCheckInterval        time.Duration `envconfig:"HEALTHCHECK_INTERVAL"`
 	HealthCheckCriticalTimeout time.Duration `envconfig:"HEALTHCHECK_CRITICAL_TIMEOUT"`
 	EnablePrivateEndpoints     bool          `envconfig:"ENABLE_PRIVATE_ENDPOINTS"`
+	EnablePermissionsAuth      bool          `envconfig:"ENABLE_PERMISSIONS_AUTH"`
+	EnableIdentityAuth         bool          `envconfig:"ENABLE_IDENTITY_AUTH"`
+	ZebedeeURL                 string        `envconfig:"ZEBEDEE_URL"`
+	CantabularURL              string        `envconfig:"CANTABULAR_URL"`
 }
 
 var cfg *Config
@@ -25,11 +29,15 @@ func Get() (*Config, error) {
 	}
 
 	cfg = &Config{
-		BindAddr:                   "localhost:27200",
+		BindAddr:                   ":27200",
 		GracefulShutdownTimeout:    5 * time.Second,
 		HealthCheckInterval:        30 * time.Second,
 		HealthCheckCriticalTimeout: 90 * time.Second,
 		EnablePrivateEndpoints:     true,
+		EnablePermissionsAuth:      true,
+		EnableIdentityAuth:         true,
+		ZebedeeURL:                 "http://localhost:8082",
+		CantabularURL:              "http://localhost:8491",
 	}
 
 	return cfg, envconfig.Process("", cfg)

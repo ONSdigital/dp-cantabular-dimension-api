@@ -4,19 +4,21 @@ import (
 	"net/http"
 	"encoding/json"
 	"fmt"
-	"errors"
 
-	"github.com/ONSdigital/log.go/v2/log"
 	"github.com/ONSdigital/dp-cantabular-dimension-api/contract"
+	"github.com/ONSdigital/dp-api-clients-go/v2/cantabular"
+	_ "github.com/ONSdigital/log.go/v2/log"
 )
 
 type Hello struct{
 	respond Responder
+	ctblr   CantabularClient
 }
 
-func NewHello(r Responder) *Hello {
+func NewHello(r Responder, c CantabularClient) *Hello {
 	return &Hello{
 		respond: r,
+		ctblr:   c,
 	}
 }
 
@@ -34,8 +36,6 @@ func(h *Hello) Get(w http.ResponseWriter, r *http.Request){
 // Post is the handler for POST /hello - Is used for an error example
 func(h *Hello) Post(w http.ResponseWriter, r *http.Request){
 	ctx := r.Context()
-	defer r.Body.Close()
-
 	var req contract.PostHelloRequest
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -45,18 +45,19 @@ func(h *Hello) Post(w http.ResponseWriter, r *http.Request){
 		})
 		return
 	}
+	defer r.Body.Close()
 
-	if req.Error {
-		h.respond.Error(ctx, w, Error{
-			err:        errors.New("I am logged error"),
-			resp:       "Hello, error!",
-			statusCode: http.StatusUnauthorized,
-			logData:    log.Data{
-				"hello": "world",
-			},
-		})
+	cReq := cantabular.GetCodebookRequest{
+		DatasetName: req.CantabularBlob,
+		Variables:   []string{"sex", "city", "siblings_3"},
+		Categories:  false,
+	}
+
+	resp, err := h.ctblr.GetCodebook(ctx, cReq)
+	if err != nil {
+		h.respond.Error(ctx, w, fmt.Errorf("failed to get Codebook: %w", err))
 		return
 	}
 
-	h.respond.StatusCode(w, http.StatusOK)
+	h.respond.JSON(ctx, w, http.StatusOK, resp)
 }

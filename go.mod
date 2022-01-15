@@ -5,9 +5,12 @@ go 1.17
 replace github.com/coreos/etcd => github.com/coreos/etcd v3.3.24+incompatible
 
 require (
+	github.com/ONSdigital/dp-api-clients-go/v2 v2.4.8
+	github.com/ONSdigital/dp-authorisation v0.1.0
 	github.com/ONSdigital/dp-component-test v0.6.3
 	github.com/ONSdigital/dp-healthcheck v1.2.3
 	github.com/ONSdigital/dp-net v1.2.0
+	github.com/ONSdigital/dp-net/v2 v2.2.0-beta
 	github.com/ONSdigital/log.go/v2 v2.0.9
 	github.com/cucumber/godog v0.12.3
 	github.com/go-chi/chi/v5 v5.0.7
@@ -18,6 +21,9 @@ require (
 require (
 	github.com/ONSdigital/dp-api-clients-go v1.41.1 // indirect
 	github.com/ONSdigital/dp-mongodb-in-memory v1.1.0 // indirect
+	github.com/ONSdigital/dp-rchttp v1.0.0 // indirect
+	github.com/ONSdigital/go-ns v0.0.0-20200205115900-a11716f93bad // indirect
+	github.com/ONSdigital/log.go v1.1.0 // indirect
 	github.com/cucumber/gherkin-go/v19 v19.0.3 // indirect
 	github.com/cucumber/messages-go/v16 v16.0.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -39,6 +45,7 @@ require (
 	github.com/maxcnunes/httpfake v1.2.4 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/shurcooL/graphql v0.0.0-20200928012149-18c5c3165e3a // indirect
 	github.com/smartystreets/assertions v1.2.1 // indirect
 	github.com/spf13/afero v1.6.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect

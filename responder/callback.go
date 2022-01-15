@@ -8,17 +8,36 @@ import (
 	"github.com/ONSdigital/log.go/v2/log"
 )
 
-// statusCode is a callback function that allows you to extract
-// a status code from an error, or returns 500 as a default
-func statusCode(err error) int {
-	var cerr coder
-	if errors.As(err, &cerr) {
-		if code := cerr.Code(); code != 0 {
+// unwrapStatusCode is a callback function that allows you to extract
+// a status code from an error. If the status code returned is 0,
+// statusCode will attempt to recursively unwrap the error until a
+// non-zero code is returned. If no more code is embedded it will
+// return status 500 as default.
+func unwrapStatusCode(err error) int {
+	if code := statusCode(err); code != 0 {
+		return code
+	}
+
+	for errors.Unwrap(err) != nil {
+		if code := statusCode(err); code != 0 {
 			return code
 		}
+		err = errors.Unwrap(err)
 	}
 
 	return http.StatusInternalServerError
+}
+
+// statusCode attempts to extract a status code from an error,
+// or returns 0 if not found
+func statusCode(err error) int {
+	var cerr coder
+
+	if errors.As(err, &cerr) {
+		return cerr.Code()
+	}
+
+	return 0
 }
 
 // logData returns logData for an error if there is any. This is used

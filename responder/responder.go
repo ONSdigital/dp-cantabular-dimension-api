@@ -51,10 +51,12 @@ func (r *Responder) Error(ctx context.Context, w http.ResponseWriter, err error)
 	respondError(ctx, w, err)
 }
 
+// respondError is the implementation of Error, seperated so it can be used internally
+// by the other respond functions without having to create a new Responder
 func respondError(ctx context.Context, w http.ResponseWriter, err error){
 	log.Error(ctx, "error responding to HTTP request", err, unwrapLogData(err))
 
-	status := statusCode(err)
+	status := unwrapStatusCode(err)
 	msg := errorResponse(err)
 
 	resp := ErrorResponse{

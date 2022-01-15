@@ -6,6 +6,7 @@ import (
 
 	"github.com/ONSdigital/dp-cantabular-dimension-api/config"
 	"github.com/ONSdigital/dp-healthcheck/healthcheck"
+	"github.com/ONSdigital/dp-api-clients-go/v2/cantabular"
 )
 
 //go:generate moq -out mock/initialiser.go -pkg mock . Initialiser
@@ -38,4 +39,9 @@ type Responder interface{
 	Error(context.Context, http.ResponseWriter, error)
 	StatusCode(http.ResponseWriter, int)
 	Raw(context.Context, http.ResponseWriter, int, []byte)
+}
+
+type CantabularClient interface {
+	GetCodebook(context.Context, cantabular.GetCodebookRequest) (*cantabular.GetCodebookResponse, error)
+	Checker(context.Context, *healthcheck.CheckState) error
 }

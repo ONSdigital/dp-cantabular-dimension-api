@@ -13,11 +13,12 @@ import (
 
 // Service contains all the configs, server and clients to run the API
 type Service struct {
-	config      *config.Config
-	server      HTTPServer
-	router      *chi.Mux
-	responder   Responder
-	healthCheck HealthChecker
+	config           *config.Config
+	server           HTTPServer
+	router           *chi.Mux
+	responder        Responder
+	cantabularClient CantabularClient
+	healthCheck      HealthChecker
 }
 
 func New() *Service {
@@ -29,10 +30,11 @@ func (svc *Service) Init(ctx context.Context, buildTime, gitCommit, version stri
 	if err != nil{
 		return fmt.Errorf("failed to get config: %w", err)
 	}
-
+	cfg.CantabularURL += "/asfk"
 	log.Info(ctx, "initialising service with config", log.Data{"config": cfg})
 
 	svc.config = cfg
+
 
 	svc.healthCheck, err = GetHealthCheck(cfg, buildTime, gitCommit, version)
 	if err != nil {
@@ -40,8 +42,9 @@ func (svc *Service) Init(ctx context.Context, buildTime, gitCommit, version stri
 	}
 
 	svc.responder = GetResponder()
+	svc.cantabularClient = GetCantabularClient(cfg)
 
-	svc.buildRoutes()
+	svc.buildRoutes(ctx)
 	svc.server = GetHTTPServer(cfg.BindAddr, svc.router)
 
 	if err := registerCheckers(ctx, svc.healthCheck); err != nil {

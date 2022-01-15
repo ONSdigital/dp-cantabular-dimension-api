@@ -1,7 +1,7 @@
 package contract
 
 type PostHelloRequest struct{
-	Error bool `json:"error"`
+	CantabularBlob string `json:"blob"`
 }
 
 type GetHelloResponse struct{
