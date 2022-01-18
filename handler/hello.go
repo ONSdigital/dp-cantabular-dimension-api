@@ -29,7 +29,7 @@ func(h *Hello) Get(w http.ResponseWriter, r *http.Request){
 		Message: "Hello, World!",
 	}
 
-	h.respond.JSON(ctx, w, http.StatusOK, resp)
+	h.respond.Raw(ctx, w, http.StatusOK, []byte(resp.Message))
 }
 
 // Post is the handler for POST /hello - Is used for an error example

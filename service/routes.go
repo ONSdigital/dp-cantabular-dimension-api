@@ -43,11 +43,11 @@ func (svc *Service) privateEndpoints(ctx context.Context) *chi.Mux {
 	r := chi.NewRouter()
 
 	svc.identityClient = identity.New(svc.config.ZebedeeURL)
-	identity := dphandlers.IdentityWithHTTPClient(svc.identityClient)
+	checkIdentity := dphandlers.IdentityWithHTTPClient(svc.identityClient)
 	permissions := middleware.NewPermissions(svc.config.ZebedeeURL, svc.config.EnablePermissionsAuth)
 
-	r.Use(identity)
-	r.Use(middleware.IsAuthenticated())
+	r.Use(checkIdentity)
+	r.Use(middleware.LogIdentity())
 	r.Use(permissions.Require(auth.Permissions{Read: true}))
 
 	hello := handler.NewHello(svc.responder, svc.cantabularClient)

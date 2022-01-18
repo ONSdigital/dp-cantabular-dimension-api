@@ -9,7 +9,7 @@ import (
 	"github.com/ONSdigital/log.go/v2/log"
 )
 
-func IsAuthenticated() func(http.Handler) http.Handler {
+func LogIdentity() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request){
 			ctx := r.Context()
