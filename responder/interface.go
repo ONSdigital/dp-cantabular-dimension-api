@@ -8,6 +8,6 @@ type coder interface {
 	Code() int
 }
 
-type responser interface {
-	Response() string
+type messager interface {
+	Message() string
 }

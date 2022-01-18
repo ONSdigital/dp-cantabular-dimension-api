@@ -97,10 +97,10 @@ func unwrapLogData(err error) log.Data {
 // errorResponse extracts a specified error response to be returned
 // to the caller if present, otherwise returns the default error
 // string
-func errorResponse(err error) string {
-	var rerr responser
+func errorMessage(err error) string {
+	var rerr messager
 	if errors.As(err, &rerr) {
-		if resp := rerr.Response(); resp != "" {
+		if resp := rerr.Message(); resp != "" {
 			return resp
 		}
 	}
