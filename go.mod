@@ -5,6 +5,7 @@ go 1.17
 replace github.com/coreos/etcd => github.com/coreos/etcd v3.3.24+incompatible
 
 require (
+	github.com/ONSdigital/dp-api-clients-go v1.41.1
 	github.com/ONSdigital/dp-api-clients-go/v2 v2.4.8
 	github.com/ONSdigital/dp-authorisation v0.1.0
 	github.com/ONSdigital/dp-component-test v0.6.3
@@ -19,7 +20,6 @@ require (
 )
 
 require (
-	github.com/ONSdigital/dp-api-clients-go v1.41.1 // indirect
 	github.com/ONSdigital/dp-mongodb-in-memory v1.1.0 // indirect
 	github.com/ONSdigital/dp-rchttp v1.0.0 // indirect
 	github.com/ONSdigital/go-ns v0.0.0-20200205115900-a11716f93bad // indirect
@@ -32,6 +32,7 @@ require (
 	github.com/gofrs/uuid v4.0.0+incompatible // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/gopherjs/gopherjs v0.0.0-20220104163920-15ed2e8cf2bd // indirect
+	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/hashicorp/go-immutable-radix v1.3.0 // indirect
 	github.com/hashicorp/go-memdb v1.3.0 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect

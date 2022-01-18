@@ -1,7 +1,11 @@
 package contract
 
+import (
+	"github.com/ONSdigital/dp-cantabular-dimension-api/model"
+)
+
 type PostHelloRequest struct{
-	CantabularBlob string `json:"blob"`
+	model.Hello
 }
 
 type GetHelloResponse struct{

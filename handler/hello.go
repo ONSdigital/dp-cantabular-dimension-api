@@ -7,7 +7,6 @@ import (
 
 	"github.com/ONSdigital/dp-cantabular-dimension-api/contract"
 	"github.com/ONSdigital/dp-api-clients-go/v2/cantabular"
-	_ "github.com/ONSdigital/log.go/v2/log"
 )
 
 type Hello struct{

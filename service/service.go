@@ -6,6 +6,8 @@ import (
 	"errors"
 
 	"github.com/ONSdigital/dp-cantabular-dimension-api/config"
+
+	"github.com/ONSdigital/dp-api-clients-go/v2/identity"
 	"github.com/ONSdigital/log.go/v2/log"
 
 	"github.com/go-chi/chi/v5"
@@ -19,6 +21,7 @@ type Service struct {
 	responder        Responder
 	cantabularClient CantabularClient
 	healthCheck      HealthChecker
+	identityClient   *identity.Client
 }
 
 func New() *Service {
@@ -30,11 +33,10 @@ func (svc *Service) Init(ctx context.Context, buildTime, gitCommit, version stri
 	if err != nil{
 		return fmt.Errorf("failed to get config: %w", err)
 	}
-	cfg.CantabularURL += "/asfk"
+
 	log.Info(ctx, "initialising service with config", log.Data{"config": cfg})
 
 	svc.config = cfg
-
 
 	svc.healthCheck, err = GetHealthCheck(cfg, buildTime, gitCommit, version)
 	if err != nil {
