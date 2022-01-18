@@ -14,7 +14,6 @@ type Config struct {
 	HealthCheckCriticalTimeout time.Duration `envconfig:"HEALTHCHECK_CRITICAL_TIMEOUT"`
 	EnablePrivateEndpoints     bool          `envconfig:"ENABLE_PRIVATE_ENDPOINTS"`
 	EnablePermissionsAuth      bool          `envconfig:"ENABLE_PERMISSIONS_AUTH"`
-	EnableIdentityAuth         bool          `envconfig:"ENABLE_IDENTITY_AUTH"`
 	ZebedeeURL                 string        `envconfig:"ZEBEDEE_URL"`
 	CantabularURL              string        `envconfig:"CANTABULAR_URL"`
 }
@@ -35,7 +34,6 @@ func Get() (*Config, error) {
 		HealthCheckCriticalTimeout: 90 * time.Second,
 		EnablePrivateEndpoints:     true,
 		EnablePermissionsAuth:      true,
-		EnableIdentityAuth:         true,
 		ZebedeeURL:                 "http://localhost:8082",
 		CantabularURL:              "http://localhost:8491",
 	}

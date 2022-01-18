@@ -38,7 +38,7 @@ type Responder interface{
 	JSON(context.Context,http.ResponseWriter, int, interface{})
 	Error(context.Context, http.ResponseWriter, error)
 	StatusCode(http.ResponseWriter, int)
-	Raw(context.Context, http.ResponseWriter, int, []byte)
+	Bytes(context.Context, http.ResponseWriter, int, []byte)
 }
 
 type CantabularClient interface {

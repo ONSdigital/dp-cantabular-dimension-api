@@ -9,11 +9,13 @@ import (
 	"github.com/ONSdigital/dp-api-clients-go/v2/cantabular"
 )
 
+// Hello handles requests to /hello
 type Hello struct{
 	respond Responder
 	ctblr   CantabularClient
 }
 
+// NewHello returns a new Hello handler
 func NewHello(r Responder, c CantabularClient) *Hello {
 	return &Hello{
 		respond: r,
@@ -29,13 +31,13 @@ func(h *Hello) Get(w http.ResponseWriter, r *http.Request){
 		Message: "Hello, World!",
 	}
 
-	h.respond.Raw(ctx, w, http.StatusOK, []byte(resp.Message))
+	h.respond.JSON(ctx, w, http.StatusOK, []byte(resp.Message))
 }
 
 // Post is the handler for POST /hello - Is used for an error example
 func(h *Hello) Post(w http.ResponseWriter, r *http.Request){
 	ctx := r.Context()
-	var req contract.PostHelloRequest
+	var req contract.CreateHelloRequest
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		h.respond.Error(ctx, w, Error{

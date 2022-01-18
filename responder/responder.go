@@ -87,9 +87,9 @@ func respondError(ctx context.Context, w http.ResponseWriter, err error){
 	log.Info(ctx, "returned error response", logData)
 }
 
-// Raw responds to a http request with the raw value of whatever's passed as
-// resp. Can be used to respond with a raw string, pre-encoded object etc
-func (r *Responder) Raw(ctx context.Context, w http.ResponseWriter, status int, resp []byte){
+// Bytes responds to a http request with the raw bytes of whatever's passed as
+// resp. Can be used to respond with a raw string, bytes, pre-encoded object etc
+func (r *Responder) Bytes(ctx context.Context, w http.ResponseWriter, status int, resp []byte){
 	w.WriteHeader(status)
 	if _, err := w.Write(resp); err != nil {
 		log.Error(ctx, "failed to write response", err, log.Data{
@@ -98,6 +98,7 @@ func (r *Responder) Raw(ctx context.Context, w http.ResponseWriter, status int, 
 		return
 	}
 }
+
 // StatusCode responds with a raw status code
 func (r *Responder) StatusCode(w http.ResponseWriter, status int){
 	w.WriteHeader(status)
