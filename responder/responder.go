@@ -59,7 +59,7 @@ func respondError(ctx context.Context, w http.ResponseWriter, err error){
 	status := unwrapStatusCode(err)
 	msg := errorMessage(err)
 
-	resp := ErrorResponse{
+	resp := errorResponse{
 		Errors: []string{msg},
 	}
 

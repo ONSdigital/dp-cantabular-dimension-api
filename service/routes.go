@@ -32,7 +32,7 @@ func (svc *Service) publicEndpoints(ctx context.Context) *chi.Mux {
 
 	hello := handler.NewHello(svc.responder, svc.cantabularClient)
 	r.Get("/hello", hello.Get)
-	r.Post("/hello", hello.Post)
+	r.Post("/hello", hello.Create)
 
 	return r
 }
@@ -54,7 +54,7 @@ func (svc *Service) privateEndpoints(ctx context.Context) *chi.Mux {
 	// Routes
 	hello := handler.NewHello(svc.responder, svc.cantabularClient)
 	r.Get("/hello", hello.Get)
-	r.Post("/hello", permissions.RequireCreate(hello.Post))
+	r.Post("/hello", permissions.RequireCreate(hello.Create))
 
 	return r
 }

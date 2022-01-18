@@ -35,7 +35,7 @@ func(h *Hello) Get(w http.ResponseWriter, r *http.Request){
 }
 
 // Post is the handler for POST /hello - Is used for an error example
-func(h *Hello) Post(w http.ResponseWriter, r *http.Request){
+func(h *Hello) Create(w http.ResponseWriter, r *http.Request){
 	ctx := r.Context()
 	var req contract.CreateHelloRequest
 
