@@ -11,12 +11,12 @@ import (
 
 // Hello handles requests to /hello
 type Hello struct{
-	respond Responder
-	ctblr   CantabularClient
+	respond responder
+	ctblr   cantabularClient
 }
 
 // NewHello returns a new Hello handler
-func NewHello(r Responder, c CantabularClient) *Hello {
+func NewHello(r responder, c cantabularClient) *Hello {
 	return &Hello{
 		respond: r,
 		ctblr:   c,
@@ -31,7 +31,7 @@ func(h *Hello) Get(w http.ResponseWriter, r *http.Request){
 		Message: "Hello, World!",
 	}
 
-	h.respond.JSON(ctx, w, http.StatusOK, []byte(resp.Message))
+	h.respond.JSON(ctx, w, http.StatusOK, resp)
 }
 
 // Post is the handler for POST /hello - Is used for an error example
@@ -42,6 +42,7 @@ func(h *Hello) Post(w http.ResponseWriter, r *http.Request){
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		h.respond.Error(ctx, w, Error{
 			err:        fmt.Errorf("badly formed request body: %w", err),
+			message:    "badly formed request body",
 			statusCode: http.StatusBadRequest,
 		})
 		return

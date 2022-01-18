@@ -3,7 +3,7 @@ package handler
 // Error is the packages error type
 type Error struct{
 	err        error
-	resp       string
+	message    string
 	statusCode int
 	logData    map[string]interface{}
 }
@@ -27,13 +27,13 @@ func (e Error) Code() int{
 	return e.statusCode
 }
 
-// Response satisfies the responser interface which is used to specify
+// Message satisfies the messanger interface which is used to specify
 // a response to be sent to the caller in place of the error text for a
 // given error. This is useful when you don't want sensitive information
 // or implementation details being exposed to the caller which could be
 // used to find exploits in our API
-func (e Error) Response() string{
-	return e.resp
+func (e Error) Message() string{
+	return e.message
 }
 
 // LogData satisfies the dataLogger interface which is used to recover
