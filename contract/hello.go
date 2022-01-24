@@ -9,7 +9,7 @@ type CreateHelloRequest struct{
 	model.Hello
 }
 
-// GetHelloRequest is the response object for GET /hello
+// GetHelloResponse is the response object for GET /hello
 type GetHelloResponse struct{
 	Message string `json:"message"`
 }

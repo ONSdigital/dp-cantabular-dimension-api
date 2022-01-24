@@ -40,7 +40,7 @@ func run(ctx context.Context) error {
 
 	svc := service.New()
 
-	if err := svc.Init(ctx, BuildTime, GitCommit, Version); err != nil{
+	if err := svc.Init(ctx, BuildTime, GitCommit, Version); err != nil {
 		return fmt.Errorf("failed to initialise service: %w", err)
 	}
 

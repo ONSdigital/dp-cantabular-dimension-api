@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/ONSdigital/dp-cantabular-dimension-api/contract"
 	"github.com/ONSdigital/dp-api-clients-go/v2/cantabular"
+	"github.com/ONSdigital/dp-cantabular-dimension-api/contract"
 )
 
 // Hello handles requests to /hello

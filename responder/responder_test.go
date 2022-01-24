@@ -76,7 +76,7 @@ func TestJSON(t *testing.T) {
 
 				Convey("the response writer should record an error status code and response body", func() {
 					expectedCode := http.StatusInternalServerError
-					expectedBody := `{"errors":["Internal Server Error: Badly formed reponse attempt"]}`
+					expectedBody := `{"errors":["Internal Server Error: Badly formed response attempt"]}`
 
 					So(w.Code, ShouldEqual, expectedCode)
 					So(w.Body.String(), ShouldResemble, expectedBody)
