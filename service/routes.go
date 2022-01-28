@@ -1,8 +1,8 @@
 package service
 
 import (
-	"net/http"
 	"context"
+	"net/http"
 
 	"github.com/ONSdigital/dp-cantabular-dimension-api/handler"
 	"github.com/ONSdigital/dp-cantabular-dimension-api/middleware"
@@ -15,10 +15,10 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-func (svc *Service) buildRoutes(ctx context.Context){
-	if svc.config.EnablePrivateEndpoints{
+func (svc *Service) buildRoutes(ctx context.Context) {
+	if svc.config.EnablePrivateEndpoints {
 		svc.router = svc.privateEndpoints(ctx)
-	} else{
+	} else {
 		svc.router = svc.publicEndpoints(ctx)
 	}
 
@@ -27,7 +27,7 @@ func (svc *Service) buildRoutes(ctx context.Context){
 
 func (svc *Service) publicEndpoints(ctx context.Context) *chi.Mux {
 	log.Info(ctx, "enabling public endpoints")
-	
+
 	r := chi.NewRouter()
 
 	hello := handler.NewHello(svc.responder, svc.cantabularClient)
@@ -39,7 +39,7 @@ func (svc *Service) publicEndpoints(ctx context.Context) *chi.Mux {
 
 func (svc *Service) privateEndpoints(ctx context.Context) *chi.Mux {
 	log.Info(ctx, "enabling private endpoints")
-	
+
 	r := chi.NewRouter()
 
 	// Middleware
@@ -53,8 +53,10 @@ func (svc *Service) privateEndpoints(ctx context.Context) *chi.Mux {
 
 	// Routes
 	hello := handler.NewHello(svc.responder, svc.cantabularClient)
+	areaTypes := handler.NewAreaTypes(svc.responder, svc.cantabularClient)
 	r.Get("/hello", hello.Get)
 	r.Post("/hello", permissions.RequireCreate(hello.Create))
+	r.Get("/area-types", areaTypes.Get)
 
 	return r
 }
