@@ -17,3 +17,7 @@ type responder interface{
 type cantabularClient interface {
 	GetCodebook(context.Context, cantabular.GetCodebookRequest) (*cantabular.GetCodebookResponse, error)
 }
+
+type validator interface{
+	Valid() error
+}

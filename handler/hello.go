@@ -2,11 +2,13 @@ package handler
 
 import (
 	"net/http"
-	"encoding/json"
 	"fmt"
 
-	"github.com/ONSdigital/dp-api-clients-go/v2/cantabular"
 	"github.com/ONSdigital/dp-cantabular-dimension-api/contract"
+
+	"github.com/ONSdigital/dp-api-clients-go/v2/cantabular"
+
+	"github.com/pkg/errors"
 )
 
 // Hello handles requests to /hello
@@ -34,17 +36,13 @@ func(h *Hello) Get(w http.ResponseWriter, r *http.Request){
 	h.respond.JSON(ctx, w, http.StatusOK, resp)
 }
 
-// Post is the handler for POST /hello - Is used for an error example
+// Create is the handler for POST /hello - Is used for an error example
 func(h *Hello) Create(w http.ResponseWriter, r *http.Request){
 	ctx := r.Context()
 	var req contract.CreateHelloRequest
 
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		h.respond.Error(ctx, w, Error{
-			err:        fmt.Errorf("badly formed request body: %w", err),
-			message:    "badly formed request body",
-			statusCode: http.StatusBadRequest,
-		})
+	if err := parseRequest(r.Body, &req); err != nil {
+		h.respond.Error(ctx, w, fmt.Errorf("failed to parse request: %w", err))
 		return
 	}
 	defer r.Body.Close()
@@ -57,7 +55,7 @@ func(h *Hello) Create(w http.ResponseWriter, r *http.Request){
 
 	resp, err := h.ctblr.GetCodebook(ctx, cReq)
 	if err != nil {
-		h.respond.Error(ctx, w, fmt.Errorf("failed to get Codebook: %w", err))
+		h.respond.Error(ctx, w, errors.Wrap(err, "failed to get Codebook"))
 		return
 	}
 

@@ -32,14 +32,14 @@ func main() {
 }
 
 func run(ctx context.Context) error {
-	log.Info(ctx, "dp-cantabular-dimension-api version", log.Data{"version": Version})
-
 	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, os.Interrupt, os.Kill)
 	svcErrors := make(chan error, 1)
 
-	svc := service.New()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
 
+	svc := service.New()
 	if err := svc.Init(ctx, BuildTime, GitCommit, Version); err != nil {
 		return fmt.Errorf("failed to initialise service: %w", err)
 	}
@@ -54,5 +54,9 @@ func run(ctx context.Context) error {
 		log.Info(ctx, "os signal received", log.Data{"signal": sig})
 	}
 
-	return svc.Close(ctx)
+	if err := svc.Close(ctx); err != nil{
+		return fmt.Errorf("failed to close service: %w", err)
+	}
+
+	return nil
 }

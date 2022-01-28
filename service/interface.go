@@ -5,8 +5,9 @@ import (
 	"net/http"
 
 	"github.com/ONSdigital/dp-cantabular-dimension-api/config"
-	"github.com/ONSdigital/dp-healthcheck/healthcheck"
+
 	"github.com/ONSdigital/dp-api-clients-go/v2/cantabular"
+	"github.com/ONSdigital/dp-healthcheck/healthcheck"
 )
 
 //go:generate moq -out mock/initialiser.go -pkg mock . Initialiser

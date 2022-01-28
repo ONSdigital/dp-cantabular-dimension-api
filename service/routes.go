@@ -7,8 +7,8 @@ import (
 	"github.com/ONSdigital/dp-cantabular-dimension-api/handler"
 	"github.com/ONSdigital/dp-cantabular-dimension-api/middleware"
 
-	"github.com/ONSdigital/dp-authorisation/auth"
 	"github.com/ONSdigital/dp-api-clients-go/v2/identity"
+	"github.com/ONSdigital/dp-authorisation/auth"
 	dphandlers "github.com/ONSdigital/dp-net/v2/handlers"
 	"github.com/ONSdigital/log.go/v2/log"
 
