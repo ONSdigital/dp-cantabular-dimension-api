@@ -29,6 +29,8 @@ var errHealthcheck = errors.New("could not get healthcheck")
 func TestInit(t *testing.T) {
 
 	Convey("Having a set of mocked dependencies", t, func() {
+		cfg, err := config.Get()
+		So(err, ShouldBeNil)
 
 		hcMock := &mock.HealthCheckerMock{
 			AddCheckFunc: func(name string, checker healthcheck.Checker) error { return nil },
@@ -60,7 +62,7 @@ func TestInit(t *testing.T) {
 			}
 			// setup (run before each `Convey` at this scope / indentation):
 			svc := service.New()
-			err := svc.Init(ctx, testBuildTime, testGitCommit, testVersion)
+			err := svc.Init(ctx, cfg, testBuildTime, testGitCommit, testVersion)
 
 			Convey("Then service Init fails with an error", func() {
 				So(errors.Is(err, errHealthcheck), ShouldBeTrue)
@@ -74,7 +76,7 @@ func TestInit(t *testing.T) {
 		Convey("Given that all dependencies are successfully initialised", func() {
 
 			// setup (run before each `Convey` at this scope / indentation):
-			err := svc.Init(ctx, testBuildTime, testGitCommit, testVersion)
+			err := svc.Init(ctx, cfg, testBuildTime, testGitCommit, testVersion)
 
 			Convey("Then service Init succeeds", func() {
 				So(err, ShouldBeNil)
@@ -91,7 +93,6 @@ func TestInit(t *testing.T) {
 func TestClose(t *testing.T) {
 
 	Convey("Having a correctly initialised service", t, func() {
-
 		cfg, err := config.Get()
 		So(err, ShouldBeNil)
 
@@ -125,7 +126,7 @@ func TestClose(t *testing.T) {
 		Convey("Closing the service results in all the dependencies being closed in the expected order", func() {
 			svcErrors := make(chan error, 1)
 			svc := service.New()
-			err := svc.Init(ctx, testBuildTime, testGitCommit, testVersion)
+			err := svc.Init(ctx, cfg, testBuildTime, testGitCommit, testVersion)
 			So(err, ShouldBeNil)
 
 			svc.Start(context.Background(), svcErrors)
@@ -150,7 +151,7 @@ func TestClose(t *testing.T) {
 
 			svcErrors := make(chan error, 1)
 			svc := service.New()
-			err := svc.Init(ctx, testBuildTime, testGitCommit, testVersion)
+			err := svc.Init(ctx, cfg, testBuildTime, testGitCommit, testVersion)
 			So(err, ShouldBeNil)
 
 			svc.Start(context.Background(), svcErrors)

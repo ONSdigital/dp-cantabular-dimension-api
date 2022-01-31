@@ -31,8 +31,10 @@ func (svc *Service) publicEndpoints(ctx context.Context) *chi.Mux {
 	r := chi.NewRouter()
 
 	hello := handler.NewHello(svc.responder, svc.cantabularClient)
+	areaTypes := handler.NewAreaTypes(svc.responder, svc.cantabularClient)
 	r.Get("/hello", hello.Get)
 	r.Post("/hello", hello.Create)
+	r.Get("/area-types", areaTypes.Get)
 
 	return r
 }

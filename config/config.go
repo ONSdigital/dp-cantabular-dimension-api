@@ -15,6 +15,7 @@ type Config struct {
 	ZebedeeURL                   string        `envconfig:"ZEBEDEE_URL"`
 	CantabularURL                string        `envconfig:"CANTABULAR_URL"`
 	CantabularExtURL             string        `envconfig:"CANTABULAR_EXT_API_URL"`
+	ComponentTestUseLogFile      bool          `envconfig:"COMPONENT_TEST_USE_LOG_FILE"`
 	EnablePrivateEndpoints       bool          `envconfig:"ENABLE_PRIVATE_ENDPOINTS"`
 	EnablePermissionsAuth        bool          `envconfig:"ENABLE_PERMISSIONS_AUTH"`
 	CantabularHealthcheckEnabled bool          `envconfig:"CANTABULAR_HEALTHCHECK_ENABLED"`
@@ -37,6 +38,7 @@ func Get() (*Config, error) {
 		ZebedeeURL:                   "http://localhost:8082",
 		CantabularURL:                "http://localhost:8491",
 		CantabularExtURL:             "http://localhost:8492",
+		ComponentTestUseLogFile:      true,
 		EnablePrivateEndpoints:       true,
 		EnablePermissionsAuth:        true,
 		CantabularHealthcheckEnabled: true,

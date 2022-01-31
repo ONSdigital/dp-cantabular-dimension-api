@@ -2,35 +2,59 @@ package main
 
 import (
 	"flag"
+	"io"
+	"log"
 	"os"
 	"testing"
 
+	"github.com/ONSdigital/dp-cantabular-dimension-api/config"
 	"github.com/ONSdigital/dp-cantabular-dimension-api/features/steps"
-	componenttest "github.com/ONSdigital/dp-component-test"
+	cmptest "github.com/ONSdigital/dp-component-test"
+	dplogs "github.com/ONSdigital/log.go/v2/log"
 	"github.com/cucumber/godog"
 	"github.com/cucumber/godog/colors"
 )
 
+const componentLogFile = "component-output.txt"
+
 var componentFlag = flag.Bool("component", false, "perform component tests")
 
 type ComponentTest struct {
-	MongoFeature *componenttest.MongoFeature
+	MongoFeature *cmptest.MongoFeature
+	t            testing.TB
+}
+
+func init() {
+	dplogs.Namespace = "dp-cantabular-filter-flex-api"
 }
 
 func (f *ComponentTest) InitializeScenario(ctx *godog.ScenarioContext) {
-	component, err := steps.NewComponent()
+	authFeature := cmptest.NewAuthorizationFeature()
+	zebedeeURL := authFeature.FakeAuthService.ResolveURL("")
+	component, err := steps.NewComponent(f.t, zebedeeURL)
 	if err != nil {
-		panic(err)
+		log.Panicf("unable to initialize component: %s", err)
 	}
 
+	component.Init()
+
+	apiFeature := cmptest.NewAPIFeature(component.Init)
+
 	ctx.BeforeScenario(func(*godog.Scenario) {
-		component.Reset()
+		apiFeature.Reset()
+		if err := component.Reset(); err != nil {
+			log.Panicf("unable to initialise scenario: %s", err)
+		}
+		authFeature.Reset()
 	})
 
 	ctx.AfterScenario(func(*godog.Scenario, error) {
-		_ = component.Close()
+		component.Close()
+		authFeature.Close()
 	})
 
+	authFeature.RegisterSteps(ctx)
+	apiFeature.RegisterSteps(ctx)
 	component.RegisterSteps(ctx)
 }
 
@@ -42,13 +66,34 @@ func TestComponent(t *testing.T) {
 	if *componentFlag {
 		status := 0
 
+		cfg, err := config.Get()
+		if err != nil {
+			t.Fatalf("failed to get service config: %s", err)
+		}
+
+		var output io.Writer = os.Stdout
+
+		if cfg.ComponentTestUseLogFile {
+			logfile, err := os.Create(componentLogFile)
+			if err != nil {
+				t.Fatalf("could not create logs file: %s", err)
+			}
+
+			defer func() {
+				if err := logfile.Close(); err != nil {
+					t.Fatalf("failed to close logs file: %s", err)
+				}
+			}()
+			output = logfile
+		}
+
 		var opts = godog.Options{
-			Output: colors.Colored(os.Stdout),
+			Output: colors.Colored(output),
 			Format: "pretty",
 			Paths:  flag.Args(),
 		}
 
-		f := &ComponentTest{}
+		f := &ComponentTest{t: t}
 
 		status = godog.TestSuite{
 			Name:                 "feature_tests",

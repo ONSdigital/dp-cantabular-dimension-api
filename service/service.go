@@ -30,10 +30,11 @@ func New() *Service {
 	return &Service{}
 }
 
-func (svc *Service) Init(ctx context.Context, buildTime, gitCommit, version string) error {
-	cfg, err := config.Get()
-	if err != nil {
-		return fmt.Errorf("failed to get config: %w", err)
+func (svc *Service) Init(ctx context.Context, cfg *config.Config, buildTime, gitCommit, version string) error {
+	var err error
+
+	if cfg == nil {
+		return errors.New("nil config passed to service init")
 	}
 
 	log.Info(ctx, "initialising service with config", log.Data{"config": cfg})

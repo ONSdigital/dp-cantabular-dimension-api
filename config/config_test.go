@@ -31,6 +31,7 @@ func TestConfig(t *testing.T) {
 					ZebedeeURL:                   "http://localhost:8082",
 					CantabularURL:                "http://localhost:8491",
 					CantabularExtURL:             "http://localhost:8492",
+					ComponentTestUseLogFile:      true,
 					EnablePrivateEndpoints:       true,
 					EnablePermissionsAuth:        true,
 					CantabularHealthcheckEnabled: true,
