@@ -24,14 +24,16 @@ func TestConfig(t *testing.T) {
 				configuration, err = Get() // This Get() is only called once, when inside this function
 				So(err, ShouldBeNil)
 				So(configuration, ShouldResemble, &Config{
-					BindAddr:                   ":27200",
-					GracefulShutdownTimeout:    5 * time.Second,
-					HealthCheckInterval:        30 * time.Second,
-					HealthCheckCriticalTimeout: 90 * time.Second,
-					ZebedeeURL:                 "http://localhost:8082",
-					CantabularURL:              "http://localhost:8491",
-					EnablePrivateEndpoints:     true,
-					EnablePermissionsAuth:      true,
+					BindAddr:                     ":27200",
+					GracefulShutdownTimeout:      5 * time.Second,
+					HealthCheckInterval:          30 * time.Second,
+					HealthCheckCriticalTimeout:   90 * time.Second,
+					ZebedeeURL:                   "http://localhost:8082",
+					CantabularURL:                "http://localhost:8491",
+					CantabularExtURL:             "http://localhost:8492",
+					EnablePrivateEndpoints:       true,
+					EnablePermissionsAuth:        true,
+					CantabularHealthcheckEnabled: true,
 				})
 			})
 

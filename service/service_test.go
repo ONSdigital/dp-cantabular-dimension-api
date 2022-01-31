@@ -1,4 +1,4 @@
-package service
+package service_test
 
 import (
 	"context"
@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/ONSdigital/dp-cantabular-dimension-api/config"
+	"github.com/ONSdigital/dp-cantabular-dimension-api/service"
 	"github.com/ONSdigital/dp-cantabular-dimension-api/service/mock"
 
 	"github.com/ONSdigital/dp-healthcheck/healthcheck"
@@ -30,12 +31,12 @@ func TestInit(t *testing.T) {
 	Convey("Having a set of mocked dependencies", t, func() {
 
 		hcMock := &mock.HealthCheckerMock{
-			AddCheckFunc: func(name string, checker healthcheck.Checker) error{return nil},
+			AddCheckFunc: func(name string, checker healthcheck.Checker) error { return nil },
 			StartFunc:    func(ctx context.Context) {},
 			StopFunc:     func() {},
 		}
 
-		GetHealthCheck = func(cfg *config.Config, buildTime, gitCommit, version string) (HealthChecker, error) {
+		service.GetHealthCheck = func(cfg *config.Config, buildTime, gitCommit, version string) (service.HealthChecker, error) {
 			return hcMock, nil
 		}
 
@@ -47,19 +48,19 @@ func TestInit(t *testing.T) {
 				return nil
 			},
 		}
-		GetHTTPServer = func(bindAddr string, router http.Handler) HTTPServer {
+		service.GetHTTPServer = func(bindAddr string, router http.Handler) service.HTTPServer {
 			return serverMock
 		}
 
-		svc := &Service{}
+		svc := &service.Service{}
 
 		Convey("Given that initialising healthcheck returns an error", func() {
-			GetHealthCheck = func(cfg *config.Config, buildTime, gitCommit, version string) (HealthChecker, error) {
+			service.GetHealthCheck = func(cfg *config.Config, buildTime, gitCommit, version string) (service.HealthChecker, error) {
 				return nil, errHealthcheck
 			}
 			// setup (run before each `Convey` at this scope / indentation):
-			svc := New()
-			err := svc.Init(ctx,testBuildTime, testGitCommit, testVersion)
+			svc := service.New()
+			err := svc.Init(ctx, testBuildTime, testGitCommit, testVersion)
 
 			Convey("Then service Init fails with an error", func() {
 				So(errors.Is(err, errHealthcheck), ShouldBeTrue)
@@ -73,7 +74,7 @@ func TestInit(t *testing.T) {
 		Convey("Given that all dependencies are successfully initialised", func() {
 
 			// setup (run before each `Convey` at this scope / indentation):
-			err := svc.Init(ctx,testBuildTime, testGitCommit, testVersion)
+			err := svc.Init(ctx, testBuildTime, testGitCommit, testVersion)
 
 			Convey("Then service Init succeeds", func() {
 				So(err, ShouldBeNil)
@@ -98,11 +99,11 @@ func TestClose(t *testing.T) {
 
 		// healthcheck Stop does not depend on any other service being closed/stopped
 		hcMock := &mock.HealthCheckerMock{
-			AddCheckFunc: func(name string, checker healthcheck.Checker) error{return nil},
+			AddCheckFunc: func(name string, checker healthcheck.Checker) error { return nil },
 			StartFunc:    func(ctx context.Context) {},
 			StopFunc:     func() { hcStopped = true },
 		}
-		GetHealthCheck = func(cfg *config.Config, buildTime, gitCommit, version string) (HealthChecker, error) {
+		service.GetHealthCheck = func(cfg *config.Config, buildTime, gitCommit, version string) (service.HealthChecker, error) {
 			return hcMock, nil
 		}
 
@@ -117,13 +118,13 @@ func TestClose(t *testing.T) {
 			},
 		}
 
-		GetHTTPServer = func(bindAddr string, router http.Handler) HTTPServer {
+		service.GetHTTPServer = func(bindAddr string, router http.Handler) service.HTTPServer {
 			return serverMock
 		}
 
 		Convey("Closing the service results in all the dependencies being closed in the expected order", func() {
 			svcErrors := make(chan error, 1)
-			svc := New()
+			svc := service.New()
 			err := svc.Init(ctx, testBuildTime, testGitCommit, testVersion)
 			So(err, ShouldBeNil)
 
@@ -143,12 +144,12 @@ func TestClose(t *testing.T) {
 				},
 			}
 
-			GetHTTPServer = func(bindAddr string, router http.Handler) HTTPServer {
+			service.GetHTTPServer = func(bindAddr string, router http.Handler) service.HTTPServer {
 				return failingserverMock
 			}
 
 			svcErrors := make(chan error, 1)
-			svc := New()
+			svc := service.New()
 			err := svc.Init(ctx, testBuildTime, testGitCommit, testVersion)
 			So(err, ShouldBeNil)
 
@@ -170,10 +171,10 @@ func TestClose(t *testing.T) {
 				},
 			}
 
-			svc := Service{
-				config:      cfg,
-				server:      timeoutServerMock,
-				healthCheck: hcMock,
+			svc := service.Service{
+				Config:      cfg,
+				Server:      timeoutServerMock,
+				HealthCheck: hcMock,
 			}
 
 			err = svc.Close(context.Background())

@@ -2,10 +2,12 @@ package service
 
 import (
 	"context"
-	"fmt"
 	"errors"
+	"fmt"
+	"net/http"
 
 	"github.com/ONSdigital/dp-cantabular-dimension-api/config"
+	"github.com/ONSdigital/dp-healthcheck/healthcheck"
 
 	"github.com/ONSdigital/dp-api-clients-go/v2/identity"
 	"github.com/ONSdigital/log.go/v2/log"
@@ -15,12 +17,12 @@ import (
 
 // Service contains all the configs, server and clients to run the API
 type Service struct {
-	config           *config.Config
-	server           HTTPServer
+	Config           *config.Config
+	Server           HTTPServer
 	router           *chi.Mux
 	responder        Responder
 	cantabularClient CantabularClient
-	healthCheck      HealthChecker
+	HealthCheck      HealthChecker
 	identityClient   *identity.Client
 }
 
@@ -30,15 +32,15 @@ func New() *Service {
 
 func (svc *Service) Init(ctx context.Context, buildTime, gitCommit, version string) error {
 	cfg, err := config.Get()
-	if err != nil{
+	if err != nil {
 		return fmt.Errorf("failed to get config: %w", err)
 	}
 
 	log.Info(ctx, "initialising service with config", log.Data{"config": cfg})
 
-	svc.config = cfg
+	svc.Config = cfg
 
-	svc.healthCheck, err = GetHealthCheck(cfg, buildTime, gitCommit, version)
+	svc.HealthCheck, err = GetHealthCheck(cfg, buildTime, gitCommit, version)
 	if err != nil {
 		return fmt.Errorf("failed to get healthcheck: %w", err)
 	}
@@ -47,9 +49,9 @@ func (svc *Service) Init(ctx context.Context, buildTime, gitCommit, version stri
 	svc.cantabularClient = GetCantabularClient(cfg)
 
 	svc.buildRoutes(ctx)
-	svc.server = GetHTTPServer(cfg.BindAddr, svc.router)
+	svc.Server = GetHTTPServer(cfg.BindAddr, svc.router)
 
-	if err := registerCheckers(ctx, svc.healthCheck); err != nil {
+	if err := svc.registerCheckers(); err != nil {
 		return fmt.Errorf("unable to register checkers: %w", err)
 	}
 
@@ -58,10 +60,10 @@ func (svc *Service) Init(ctx context.Context, buildTime, gitCommit, version stri
 
 // Start the service
 func (svc *Service) Start(ctx context.Context, svcErrors chan error) {
-	svc.healthCheck.Start(ctx)
+	svc.HealthCheck.Start(ctx)
 
 	go func() {
-		if err := svc.server.ListenAndServe(); err != nil {
+		if err := svc.Server.ListenAndServe(); err != nil {
 			svcErrors <- fmt.Errorf("failed to start main http server: %w", err)
 		}
 	}()
@@ -69,7 +71,7 @@ func (svc *Service) Start(ctx context.Context, svcErrors chan error) {
 
 // Close gracefully shuts the service down in the required order, with timeout
 func (svc *Service) Close(ctx context.Context) error {
-	timeout := svc.config.GracefulShutdownTimeout
+	timeout := svc.Config.GracefulShutdownTimeout
 	log.Info(ctx, "commencing graceful shutdown", log.Data{"graceful_shutdown_timeout": timeout})
 	ctx, cancel := context.WithTimeout(ctx, timeout)
 
@@ -80,12 +82,12 @@ func (svc *Service) Close(ctx context.Context) error {
 		defer cancel()
 
 		// stop healthcheck, as it depends on everything else
-		if svc.healthCheck != nil {
-			svc.healthCheck.Stop()
+		if svc.HealthCheck != nil {
+			svc.HealthCheck.Stop()
 		}
 
 		// stop any incoming requests before closing any outbound connections
-		if err := svc.server.Shutdown(ctx); err != nil {
+		if err := svc.Server.Shutdown(ctx); err != nil {
 			log.Error(ctx, "failed to shutdown http server", err)
 			hasShutdownError = true
 		}
@@ -110,6 +112,29 @@ func (svc *Service) Close(ctx context.Context) error {
 	return nil
 }
 
-func registerCheckers(ctx context.Context, hc HealthChecker) error {
+func (svc *Service) registerCheckers() error {
+	hc := svc.HealthCheck
+
+	// TODO - when Cantabular server is deployed to Production, remove this placeholder and the flag,
+	// and always use the real Checker instead: svc.cantabularClient.Checker
+	cantabularChecker := svc.cantabularClient.Checker
+	cantabularAPIExtChecker := svc.cantabularClient.CheckerAPIExt
+	if !svc.Config.CantabularHealthcheckEnabled {
+		cantabularChecker = func(ctx context.Context, state *healthcheck.CheckState) error {
+			return state.Update(healthcheck.StatusOK, "Cantabular healthcheck placeholder", http.StatusOK)
+		}
+		cantabularAPIExtChecker = func(ctx context.Context, state *healthcheck.CheckState) error {
+			return state.Update(healthcheck.StatusOK, "Cantabular APIExt healthcheck placeholder", http.StatusOK)
+		}
+	}
+
+	if err := hc.AddCheck("Cantabular server", cantabularChecker); err != nil {
+		return fmt.Errorf("error adding check for Cantabular server: %w", err)
+	}
+
+	if err := hc.AddCheck("Cantabular API Extension", cantabularAPIExtChecker); err != nil {
+		return fmt.Errorf("error adding check for Cantabular api extension: %w", err)
+	}
+
 	return nil
 }

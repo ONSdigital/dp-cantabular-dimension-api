@@ -16,13 +16,13 @@ import (
 )
 
 func (svc *Service) buildRoutes(ctx context.Context) {
-	if svc.config.EnablePrivateEndpoints {
+	if svc.Config.EnablePrivateEndpoints {
 		svc.router = svc.privateEndpoints(ctx)
 	} else {
 		svc.router = svc.publicEndpoints(ctx)
 	}
 
-	svc.router.Handle("/health", http.HandlerFunc(svc.healthCheck.Handler))
+	svc.router.Handle("/health", http.HandlerFunc(svc.HealthCheck.Handler))
 }
 
 func (svc *Service) publicEndpoints(ctx context.Context) *chi.Mux {
@@ -43,9 +43,9 @@ func (svc *Service) privateEndpoints(ctx context.Context) *chi.Mux {
 	r := chi.NewRouter()
 
 	// Middleware
-	svc.identityClient = identity.New(svc.config.ZebedeeURL)
+	svc.identityClient = identity.New(svc.Config.ZebedeeURL)
 	checkIdentity := dphandlers.IdentityWithHTTPClient(svc.identityClient)
-	permissions := middleware.NewPermissions(svc.config.ZebedeeURL, svc.config.EnablePermissionsAuth)
+	permissions := middleware.NewPermissions(svc.Config.ZebedeeURL, svc.Config.EnablePermissionsAuth)
 
 	r.Use(checkIdentity)
 	r.Use(middleware.LogIdentity())

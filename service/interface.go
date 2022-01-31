@@ -4,9 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/ONSdigital/dp-cantabular-dimension-api/config"
-
 	"github.com/ONSdigital/dp-api-clients-go/v2/cantabular"
+	"github.com/ONSdigital/dp-cantabular-dimension-api/config"
 	"github.com/ONSdigital/dp-healthcheck/healthcheck"
 )
 
@@ -35,8 +34,8 @@ type HealthChecker interface {
 }
 
 // Responder handles responding to http requests
-type Responder interface{
-	JSON(context.Context,http.ResponseWriter, int, interface{})
+type Responder interface {
+	JSON(context.Context, http.ResponseWriter, int, interface{})
 	Error(context.Context, http.ResponseWriter, error)
 	StatusCode(http.ResponseWriter, int)
 	Bytes(context.Context, http.ResponseWriter, int, []byte)
@@ -44,5 +43,7 @@ type Responder interface{
 
 type CantabularClient interface {
 	GetCodebook(context.Context, cantabular.GetCodebookRequest) (*cantabular.GetCodebookResponse, error)
+	GetGeographyDimensions(ctx context.Context, dataset string) (*cantabular.GetGeographyDimensionsResponse, error)
 	Checker(context.Context, *healthcheck.CheckState) error
+	CheckerAPIExt(ctx context.Context, state *healthcheck.CheckState) error
 }
