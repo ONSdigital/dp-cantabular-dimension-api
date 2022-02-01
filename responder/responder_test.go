@@ -9,7 +9,6 @@ import (
 
 	"github.com/ONSdigital/dp-cantabular-dimension-api/responder"
 
-
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -18,9 +17,9 @@ type testResponse struct {
 }
 
 type testError struct {
-	err     error
-	msg     string
-	code    int
+	err  error
+	msg  string
+	code int
 }
 
 func (e testError) Error() string {
@@ -86,8 +85,6 @@ func TestJSON(t *testing.T) {
 	})
 }
 
-
-
 func TestError(t *testing.T) {
 
 	r := responder.New()
@@ -116,7 +113,7 @@ func TestError(t *testing.T) {
 		Convey("Given an error that satisfies interfaces providing Code() and Response() functions", func() {
 			err := testError{
 				err:  errors.New("test error"),
-				msg: "test response",
+				msg:  "test response",
 				code: http.StatusUnauthorized,
 			}
 

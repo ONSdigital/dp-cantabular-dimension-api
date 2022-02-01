@@ -37,7 +37,7 @@ var GetResponder = func() Responder {
 var GetCantabularClient = func(cfg *config.Config) CantabularClient {
 	return cantabular.NewClient(
 		cantabular.Config{
-			Host:           cfg.CantabularURL,
+			Host: cfg.CantabularURL,
 		},
 		dphttp.NewClient(),
 		nil,

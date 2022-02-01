@@ -54,7 +54,7 @@ func (c *Component) Close() error {
 func (c *Component) InitialiseService() (http.Handler, error) {
 	var err error
 	c.svc = service.New()
-	if err = c.svc.Init(context.Background(), "1", "", ""); err != nil{
+	if err = c.svc.Init(context.Background(), "1", "", ""); err != nil {
 		return nil, fmt.Errorf("failed to initialise service: %w", err)
 	}
 

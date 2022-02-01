@@ -72,7 +72,7 @@ func unwrapLogData(err error) log.Data {
 		err = errors.Unwrap(err)
 	}
 
-	if len(data) == 0{
+	if len(data) == 0 {
 		return nil
 	}
 
@@ -120,18 +120,18 @@ func errorMessage(err error) string {
 // and returns the slice of stack frames. These are of type
 // log.go/EventStackTrace so can be used directly with log.Go's
 // available API to preserve the correct error logging format
-func stackTrace(err error) []log.EventStackTrace{
+func stackTrace(err error) []log.EventStackTrace {
 	var serr stacktracer
 	var resp []log.EventStackTrace
 
 	for errors.Unwrap(err) != nil && errors.As(err, &serr) {
 		st := serr.StackTrace()
 		resp = make([]log.EventStackTrace, 0)
-		for _, f := range st{
-			line, _ := strconv.Atoi(fmt.Sprintf("%d",  f))
+		for _, f := range st {
+			line, _ := strconv.Atoi(fmt.Sprintf("%d", f))
 			resp = append(resp, log.EventStackTrace{
 				File:     fmt.Sprintf("%+s", f),
-				Function: fmt.Sprintf("%n",  f),
+				Function: fmt.Sprintf("%n", f),
 				Line:     line,
 			})
 		}

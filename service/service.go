@@ -30,7 +30,7 @@ func New() *Service {
 
 func (svc *Service) Init(ctx context.Context, buildTime, gitCommit, version string) error {
 	cfg, err := config.Get()
-	if err != nil{
+	if err != nil {
 		return fmt.Errorf("failed to get config: %w", err)
 	}
 

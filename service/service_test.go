@@ -30,7 +30,7 @@ func TestInit(t *testing.T) {
 	Convey("Having a set of mocked dependencies", t, func() {
 
 		hcMock := &mock.HealthCheckerMock{
-			AddCheckFunc: func(name string, checker healthcheck.Checker) error{return nil},
+			AddCheckFunc: func(name string, checker healthcheck.Checker) error { return nil },
 			StartFunc:    func(ctx context.Context) {},
 			StopFunc:     func() {},
 		}
@@ -59,7 +59,7 @@ func TestInit(t *testing.T) {
 			}
 			// setup (run before each `Convey` at this scope / indentation):
 			svc := New()
-			err := svc.Init(ctx,testBuildTime, testGitCommit, testVersion)
+			err := svc.Init(ctx, testBuildTime, testGitCommit, testVersion)
 
 			Convey("Then service Init fails with an error", func() {
 				So(errors.Is(err, errHealthcheck), ShouldBeTrue)
@@ -73,7 +73,7 @@ func TestInit(t *testing.T) {
 		Convey("Given that all dependencies are successfully initialised", func() {
 
 			// setup (run before each `Convey` at this scope / indentation):
-			err := svc.Init(ctx,testBuildTime, testGitCommit, testVersion)
+			err := svc.Init(ctx, testBuildTime, testGitCommit, testVersion)
 
 			Convey("Then service Init succeeds", func() {
 				So(err, ShouldBeNil)
@@ -98,7 +98,7 @@ func TestClose(t *testing.T) {
 
 		// healthcheck Stop does not depend on any other service being closed/stopped
 		hcMock := &mock.HealthCheckerMock{
-			AddCheckFunc: func(name string, checker healthcheck.Checker) error{return nil},
+			AddCheckFunc: func(name string, checker healthcheck.Checker) error { return nil },
 			StartFunc:    func(ctx context.Context) {},
 			StopFunc:     func() { hcStopped = true },
 		}

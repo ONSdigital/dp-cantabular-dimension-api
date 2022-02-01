@@ -12,7 +12,7 @@ import (
 )
 
 // Hello handles requests to /hello
-type Hello struct{
+type Hello struct {
 	respond responder
 	ctblr   cantabularClient
 }
@@ -26,7 +26,7 @@ func NewHello(r responder, c cantabularClient) *Hello {
 }
 
 // Get is the handler for GET /hello
-func(h *Hello) Get(w http.ResponseWriter, r *http.Request){
+func (h *Hello) Get(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	resp := contract.GetHelloResponse{
@@ -37,7 +37,7 @@ func(h *Hello) Get(w http.ResponseWriter, r *http.Request){
 }
 
 // Create is the handler for POST /hello - Is used for an error example
-func(h *Hello) Create(w http.ResponseWriter, r *http.Request){
+func (h *Hello) Create(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	var req contract.CreateHelloRequest
 
