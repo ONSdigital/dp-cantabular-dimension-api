@@ -1,8 +1,8 @@
 package service
 
 import (
-	"net/http"
 	"context"
+	"net/http"
 
 	"github.com/ONSdigital/dp-cantabular-dimension-api/handler"
 	"github.com/ONSdigital/dp-cantabular-dimension-api/middleware"
@@ -47,9 +47,9 @@ func (svc *Service) privateEndpoints(ctx context.Context) *chi.Mux {
 	checkIdentity := dphandlers.IdentityWithHTTPClient(svc.identityClient)
 	permissions := middleware.NewPermissions(svc.config.ZebedeeURL, svc.config.EnablePermissionsAuth)
 
+	r.Use(permissions.Require(auth.Permissions{Read: true}))
 	r.Use(checkIdentity)
 	r.Use(middleware.LogIdentity())
-	r.Use(permissions.Require(auth.Permissions{Read: true}))
 
 	// Routes
 	hello := handler.NewHello(svc.responder, svc.cantabularClient)

@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"net/http"
 	"fmt"
+	"net/http"
 
 	"github.com/ONSdigital/dp-cantabular-dimension-api/contract"
 

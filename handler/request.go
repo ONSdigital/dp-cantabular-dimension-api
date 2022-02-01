@@ -1,10 +1,10 @@
 package handler
 
 import (
-	"io"
 	"fmt"
-	"net/http"
 	"encoding/json"
+	"io"
+	"net/http"
 
 	"github.com/ONSdigital/log.go/v2/log"
 	"github.com/pkg/errors"

@@ -2,10 +2,10 @@ package responder
 
 import (
 	"errors"
-	"strconv"
 	"fmt"
 	"net/http"
 	"reflect"
+	"strconv"
 
 	"github.com/ONSdigital/log.go/v2/log"
 )
@@ -117,7 +117,7 @@ func errorMessage(err error) string {
 // stackTrace recursively unwraps the error looking for the deepest
 // level at which the error was wrapped with a stack trace from
 // github.com/pkg/errors (or conforms to the StackTracer interface)
-// and returns the slice of stack frames. These can are of type
+// and returns the slice of stack frames. These are of type
 // log.go/EventStackTrace so can be used directly with log.Go's
 // available API to preserve the correct error logging format
 func stackTrace(err error) []log.EventStackTrace{

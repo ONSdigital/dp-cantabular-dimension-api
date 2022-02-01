@@ -2,8 +2,8 @@ package service
 
 import (
 	"context"
-	"fmt"
 	"errors"
+	"fmt"
 
 	"github.com/ONSdigital/dp-cantabular-dimension-api/config"
 
