@@ -55,6 +55,7 @@ Feature: Area Types
         }
     }
     """
+
     And I GET "/area-types?cantabular_blob=Example"
 
     Then I should receive the following JSON response:
@@ -75,20 +76,76 @@ Feature: Area Types
 
     And the HTTP status code should be "200"
 
-  Scenario: Getting area-types bad request
+  Scenario: Getting area-types no cantabular_blob
+
+    When the following geography query response is available from Cantabular api extension for the dataset "":
+    """
+    {
+        "data": {
+            "dataset": {
+                "ruleBase": {
+                    "isSourceOf": {
+                        "edges": [
+                            {
+                                "node": {
+                                    "categories": {
+                                        "totalCount": 2
+                                    },
+                                    "label": "Country",
+                                    "mapFrom": [
+                                        {
+                                            "edges": [
+                                                {
+                                                    "node": {
+                                                        "filterOnly": "false",
+                                                        "label": "City",
+                                                        "name": "city"
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    "name": "country"
+                                }
+                            },
+                            {
+                                "node": {
+                                    "categories": {
+                                        "totalCount": 3
+                                    },
+                                    "label": "City",
+                                    "mapFrom": [],
+                                    "name": "city"
+                                }
+                            }
+                        ]
+                    },
+                    "name": "city"
+                }
+            }
+        }
+    }
+    """
     
-    When I GET "/area-types"
+    And I GET "/area-types"
 
     Then I should receive the following JSON response:
     """
     {
-        "errors": [
-            "cantabular blob not provided"
+        "area-types": [
+            {
+                "id": "country",
+                "label": "Country"
+            },
+            {
+                "id": "city",
+                "label": "City"
+            }
         ]
     }
     """
 
-    And the HTTP status code should be "400"
+    And the HTTP status code should be "200"
 
   Scenario: Getting area-types not found
 

@@ -23,6 +23,12 @@ paths:
           description: "area types returned successfully"
           schema:
             $ref: '#/definitions/GetAreaTypesResponse'
+        401:
+          description: "Unauthorised to get the list of area types"
+        404:
+          description: "Cantabular Blob not found"
+          schema:
+            $ref: '#/definitions/ErrorResponse'
   /area-types/{area-type}:
     get:
       parameters:
@@ -228,6 +234,13 @@ definitions:
             id: "2"
           version:
             href: "http://localhost:22000/datasets/cantabular-example-1/editions/2021/versions/1"
+  ErrorResponse:
+    description: "The response body containing an error message"
+    properties:
+      errors:
+        type: array
+        items:
+          type: string
   Dimension:
     properties:
       name:

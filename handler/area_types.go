@@ -31,14 +31,6 @@ func (at *AreaTypes) Get(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	blob := r.URL.Query().Get(ParamCantabularBlob)
 
-	if blob == "" {
-		at.respond.Error(ctx, w, Error{
-			message:    "cantabular blob not provided",
-			statusCode: http.StatusBadRequest,
-		})
-		return
-	}
-
 	res, err := at.ctblr.GetGeographyDimensions(ctx, blob)
 	if err != nil {
 		at.respond.Error(ctx, w, errors.Wrap(err, "failed to get area-types from cantabular"))
