@@ -24,11 +24,15 @@ paths:
           schema:
             $ref: '#/definitions/GetAreaTypesResponse'
         401:
-          description: "Unauthorised to get the list of area types"
+          $ref: '#/responses/Unauthorised'
         404:
           description: "Cantabular Blob not found"
           schema:
             $ref: '#/definitions/ErrorResponse'
+        500:
+          $ref: '#/responses/InternalServerError'
+        502:
+          $ref: '#/responses/BadGateway'
   /area-types/{area-type}:
     get:
       parameters:
@@ -113,6 +117,13 @@ paths:
           description: "area types returned successfully"
           schema:
             $ref: '#/definitions/GetDimensionOptionsResponse'
+responses:
+  Unauthorised:
+    description: "The token provided is unauthorised to carry out this operation"
+  InternalServerError:
+    description: "Failed to process the request due to an internal error"
+  BadGateway:
+    description: "Failed to process the request due to an error in the cantabular server or api extension"
 definitions:
   GetAreaTypesResponse:
     description: "The response body containing all available area-types for a given Cantabular Blob"

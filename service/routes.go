@@ -16,32 +16,31 @@ import (
 )
 
 func (svc *Service) buildRoutes(ctx context.Context) {
-	if svc.Config.EnablePrivateEndpoints {
-		svc.router = svc.privateEndpoints(ctx)
-	} else {
-		svc.router = svc.publicEndpoints(ctx)
-	}
+	svc.router = chi.NewRouter()
 
 	svc.router.Handle("/health", http.HandlerFunc(svc.HealthCheck.Handler))
+
+	if svc.Config.EnablePrivateEndpoints {
+		svc.privateEndpoints(ctx)
+	} else {
+		svc.publicEndpoints(ctx)
+	}
 }
 
-func (svc *Service) publicEndpoints(ctx context.Context) *chi.Mux {
+func (svc *Service) publicEndpoints(ctx context.Context) {
 	log.Info(ctx, "enabling public endpoints")
-
-	r := chi.NewRouter()
 
 	hello := handler.NewHello(svc.responder, svc.cantabularClient)
 	areaTypes := handler.NewAreaTypes(svc.responder, svc.cantabularClient)
-	r.Get("/hello", hello.Get)
-	r.Post("/hello", hello.Create)
-	r.Get("/area-types", areaTypes.Get)
-
-	return r
+	svc.router.Get("/hello", hello.Get)
+	svc.router.Post("/hello", hello.Create)
+	svc.router.Get("/area-types", areaTypes.Get)
 }
 
-func (svc *Service) privateEndpoints(ctx context.Context) *chi.Mux {
+func (svc *Service) privateEndpoints(ctx context.Context) {
 	log.Info(ctx, "enabling private endpoints")
 
+	// use sub-router to prevent /health endpoint from requiring auth
 	r := chi.NewRouter()
 
 	// Middleware
@@ -60,5 +59,5 @@ func (svc *Service) privateEndpoints(ctx context.Context) *chi.Mux {
 	r.Post("/hello", permissions.RequireCreate(hello.Create))
 	r.Get("/area-types", areaTypes.Get)
 
-	return r
+	svc.router.Mount("/", r)
 }

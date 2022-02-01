@@ -6,7 +6,6 @@ Feature: Area Types
     And cantabular api extension is healthy
 
   Scenario: Getting area-types happy
-
     When the following geography query response is available from Cantabular api extension for the dataset "Example":
     """
     {
@@ -55,7 +54,6 @@ Feature: Area Types
         }
     }
     """
-
     And I GET "/area-types?cantabular_blob=Example"
 
     Then I should receive the following JSON response:
@@ -73,11 +71,9 @@ Feature: Area Types
         ]
     }
     """
-
     And the HTTP status code should be "200"
 
   Scenario: Getting area-types no cantabular_blob
-
     When the following geography query response is available from Cantabular api extension for the dataset "":
     """
     {
@@ -126,7 +122,6 @@ Feature: Area Types
         }
     }
     """
-    
     And I GET "/area-types"
 
     Then I should receive the following JSON response:
@@ -144,11 +139,9 @@ Feature: Area Types
         ]
     }
     """
-
     And the HTTP status code should be "200"
 
   Scenario: Getting area-types not found
-
     When the following error json response is returned from Cantabular api extension for the dataset "Inexistent":
     """
     {
@@ -171,7 +164,6 @@ Feature: Area Types
         ]
     }
     """
-
     And I GET "/area-types?cantabular_blob=Inexistent"
 
     Then I should receive the following JSON response:
@@ -182,5 +174,4 @@ Feature: Area Types
         ]
     }
     """
-
     And the HTTP status code should be "404"
