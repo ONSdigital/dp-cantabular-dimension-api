@@ -37,9 +37,7 @@ func (at *AreaTypes) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp := contract.GetAreaTypesResponse{
-		AreaTypes: []model.AreaType{},
-	}
+	var resp contract.GetAreaTypesResponse
 
 	if res != nil {
 		for _, edge := range res.Dataset.RuleBase.IsSourceOf.Edges {
