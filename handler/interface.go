@@ -19,6 +19,6 @@ type cantabularClient interface {
 	GetGeographyDimensions(ctx context.Context, dataset string) (*cantabular.GetGeographyDimensionsResponse, error)
 }
 
-type validator interface{
+type validator interface {
 	Valid() error
 }

@@ -113,7 +113,7 @@ func TestClose(t *testing.T) {
 			ListenAndServeFunc: func() error { return nil },
 			ShutdownFunc: func(ctx context.Context) error {
 				if !hcStopped {
-					return errors.New("Server stopped before healthcheck")
+					return errors.New("server stopped before healthcheck")
 				}
 				return nil
 			},
@@ -141,7 +141,7 @@ func TestClose(t *testing.T) {
 			failingserverMock := &mock.HTTPServerMock{
 				ListenAndServeFunc: func() error { return nil },
 				ShutdownFunc: func(ctx context.Context) error {
-					return errors.New("Failed to stop http server")
+					return errors.New("failed to stop http server")
 				},
 			}
 

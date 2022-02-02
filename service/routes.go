@@ -47,9 +47,9 @@ func (svc *Service) privateEndpoints(ctx context.Context) {
 	checkIdentity := dphandlers.IdentityWithHTTPClient(svc.identityClient)
 	permissions := middleware.NewPermissions(svc.Config.ZebedeeURL, svc.Config.EnablePermissionsAuth)
 
+	r.Use(permissions.Require(auth.Permissions{Read: true}))
 	r.Use(checkIdentity)
 	r.Use(middleware.LogIdentity())
-	r.Use(permissions.Require(auth.Permissions{Read: true}))
 
 	// Routes
 	areaTypes := handler.NewAreaTypes(svc.responder, svc.cantabularClient)
