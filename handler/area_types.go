@@ -29,7 +29,7 @@ func (at *AreaTypes) Get(w http.ResponseWriter, r *http.Request) {
 
 	var req contract.GetAreaTypesRequest
 	if err := schema.NewDecoder().Decode(&req, r.URL.Query()); err != nil {
-		at.respond.Error(ctx, w, errors.Wrap(err, "failed to decode query parameter from get area-types request"))
+		at.respond.ErrorWithStatus(ctx, w, http.StatusBadRequest, errors.Wrap(err, "failed to decode query parameter from get area-types request"))
 		return
 	}
 

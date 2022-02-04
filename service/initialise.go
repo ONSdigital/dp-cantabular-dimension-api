@@ -4,11 +4,11 @@ import (
 	"net/http"
 
 	"github.com/ONSdigital/dp-cantabular-dimension-api/config"
-	"github.com/ONSdigital/dp-cantabular-dimension-api/responder"
 
 	"github.com/ONSdigital/dp-api-clients-go/v2/cantabular"
 	"github.com/ONSdigital/dp-healthcheck/healthcheck"
-	dphttp "github.com/ONSdigital/dp-net/http"
+	dphttp "github.com/ONSdigital/dp-net/v2/http"
+	responder "github.com/ONSdigital/dp-net/v2/responder"
 )
 
 // GetHTTPServer creates an HTTP Server with the provided bind address and router

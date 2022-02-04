@@ -10,6 +10,7 @@ import (
 type responder interface {
 	JSON(context.Context, http.ResponseWriter, int, interface{})
 	Error(context.Context, http.ResponseWriter, error)
+	ErrorWithStatus(context.Context, http.ResponseWriter, int, error)
 	StatusCode(http.ResponseWriter, int)
 	Bytes(context.Context, http.ResponseWriter, int, []byte)
 }
