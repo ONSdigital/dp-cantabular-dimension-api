@@ -9,12 +9,12 @@ schemes:
 paths:
   /area-types:
     get:
-      summary: "Get list of area types for given Cantabular Blob "
+      summary: "Get list of area types for given Cantabular dataset "
       description: ""
       produces:
       - "application/json"
       parameters:
-        - name: cantabular_blob
+        - name: cantabular_dataset
           type: string
           in: query
           required: false
@@ -26,7 +26,7 @@ paths:
         401:
           $ref: '#/responses/Unauthorised'
         404:
-          description: "Cantabular Blob not found"
+          description: "Cantabular Dataset not found"
           schema:
             $ref: '#/definitions/ErrorResponse'
         500:
@@ -87,12 +87,12 @@ paths:
             $ref: '#/definitions/GetAreaTypeParentsResponse'
   /dimensions:
     get:
-      summary: "Get list of geography dimensions for given Cantabular Blob "
+      summary: "Get list of geography dimensions for given Cantabular Dataset "
       description: ""
       produces:
       - "application/json"
       parameters:
-        - name: cantabular_blob
+        - name: cantabular_dataset
           type: string
           in: query
           required: true
@@ -126,7 +126,7 @@ responses:
     description: "Failed to process the request due to an error in the cantabular server or api extension"
 definitions:
   GetAreaTypesResponse:
-    description: "The response body containing all available area-types for a given Cantabular Blob"
+    description: "The response body containing all available area-types for a given Cantabular dataset"
     properties:
       area-types:
         type: array
@@ -140,7 +140,7 @@ definitions:
         - id: "city"
           label: "City"
   GetAreaTypeResponse:
-    description: "The response body containing all available area-types for a given Cantabular Blob"
+    description: "The response body containing all available area-types for a given Cantabular dataset"
     properties:
       area-type:
         allOf:
@@ -194,7 +194,7 @@ definitions:
       parent:
         type: string
   GetDimensionsResponse:
-    description: "The response body containing dimensions for a given Cantabular Blob"
+    description: "The response body containing dimensions for a given Cantabular dataset"
     properties:
       dimensions:
         type: array

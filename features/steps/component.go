@@ -87,7 +87,7 @@ func (c *Component) setInitialiserMock() {
 	}
 }
 
-func (c *Component) startService(ctx context.Context) error {
+func (c *Component) startService(ctx context.Context) {
 	c.svc.Start(ctx, c.errorChan)
 
 	c.wg.Add(1)
@@ -108,8 +108,6 @@ func (c *Component) startService(ctx context.Context) error {
 			panic(fmt.Errorf("unexpected error during service graceful shutdown: %w", err))
 		}
 	}()
-
-	return nil
 }
 
 // Close kills the application under test.

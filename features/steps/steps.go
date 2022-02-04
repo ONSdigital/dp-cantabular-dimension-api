@@ -22,7 +22,8 @@ func (c *Component) RegisterSteps(ctx *godog.ScenarioContext) {
 // note that this step should be called only after all dependencies have been setup,
 // to prevent any race condition, specially during the first healthcheck iteration.
 func (c *Component) theServiceStarts() error {
-	return c.startService(c.ctx)
+	c.startService(c.ctx)
+	return nil
 }
 
 // cantabularServerIsHealthy generates a mocked healthy response for cantabular server
@@ -56,7 +57,7 @@ func (c *Component) privateEndpointsAreNotEnabled() error {
 }
 
 // theFollowingCantabularResponseIsAvailable generates a mocked response for Cantabular Server
-// POST /graphql with the provided query and dataset (blob)
+// POST /graphql with the provided query and Cantabular dataset
 func (c *Component) theFollowingCantabularResponseIsAvailable(dataset string, cb *godog.DocString) error {
 	data := cantabular.QueryData{
 		Dataset: dataset,

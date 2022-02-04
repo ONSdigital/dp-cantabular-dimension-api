@@ -15,7 +15,7 @@ type responder interface {
 }
 
 type cantabularClient interface {
-	GetCodebook(context.Context, cantabular.GetCodebookRequest) (*cantabular.GetCodebookResponse, error)
+	GetCodebook(ctx context.Context, req cantabular.GetCodebookRequest) (*cantabular.GetCodebookResponse, error)
 	GetGeographyDimensions(ctx context.Context, dataset string) (*cantabular.GetGeographyDimensionsResponse, error)
 }
 

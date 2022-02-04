@@ -5,11 +5,12 @@ import (
 
 	"github.com/ONSdigital/dp-cantabular-dimension-api/contract"
 	"github.com/ONSdigital/dp-cantabular-dimension-api/model"
+	"github.com/gorilla/schema"
 	"github.com/pkg/errors"
 )
 
 const (
-	ParamCantabularBlob = "cantabular_blob"
+	ParamCantabularDataset = "cantabular_dataset"
 )
 
 // AreaTypes handles requests to /area-types
@@ -29,9 +30,14 @@ func NewAreaTypes(r responder, c cantabularClient) *AreaTypes {
 // Get is the handler for GET /area-types
 func (at *AreaTypes) Get(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	blob := r.URL.Query().Get(ParamCantabularBlob)
 
-	res, err := at.ctblr.GetGeographyDimensions(ctx, blob)
+	var req contract.GetAreaTypesRequest
+	if err := schema.NewDecoder().Decode(&req, r.URL.Query()); err != nil {
+		at.respond.Error(ctx, w, errors.Wrap(err, "failed to decode query parameter from get area-types request"))
+		return
+	}
+
+	res, err := at.ctblr.GetGeographyDimensions(ctx, req.CantabularDataset)
 	if err != nil {
 		at.respond.Error(ctx, w, errors.Wrap(err, "failed to get area-types from cantabular"))
 		return

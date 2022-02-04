@@ -59,7 +59,7 @@ Feature: Area Types
         }
       }
       """
-    And I GET "/area-types?cantabular_blob=Example"
+    And I GET "/area-types?cantabular_dataset=Example"
 
     Then I should receive the following JSON response:
       """
@@ -80,7 +80,7 @@ Feature: Area Types
     And the HTTP status code should be "200"
 
 
-  Scenario: Getting area-types no cantabular_blob
+  Scenario: Getting area-types no cantabular_dataset
 
     When the following geography query response is available from Cantabular api extension for the dataset "":
       """
@@ -177,7 +177,7 @@ Feature: Area Types
       }
       """
 
-    And I GET "/area-types?cantabular_blob=Inexistent"
+    And I GET "/area-types?cantabular_dataset=Inexistent"
 
     Then I should receive the following JSON response:
       """

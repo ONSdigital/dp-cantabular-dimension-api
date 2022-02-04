@@ -64,7 +64,7 @@ Feature: Area Types Private Endpoints Enabled
       }
       """
 
-    And I GET "/area-types?cantabular_blob=Example"
+    And I GET "/area-types?cantabular_dataset=Example"
 
     Then I should receive the following JSON response:
       """
@@ -91,6 +91,6 @@ Feature: Area Types Private Endpoints Enabled
 
     And I am not authorised
 
-    When I GET "/area-types?cantabular_blob=Example"
+    When I GET "/area-types?cantabular_dataset=Example"
 
     Then the HTTP status code should be "401"
