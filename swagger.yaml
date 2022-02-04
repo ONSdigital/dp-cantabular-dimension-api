@@ -9,12 +9,12 @@ schemes:
 paths:
   /area-types:
     get:
-      summary: "Get list of area types for given Cantabular dataset "
+      summary: "Get list of area types for given dataset "
       description: ""
       produces:
       - "application/json"
       parameters:
-        - name: cantabular_dataset
+        - name: dataset
           type: string
           in: query
           required: false
@@ -26,7 +26,7 @@ paths:
         401:
           $ref: '#/responses/Unauthorised'
         404:
-          description: "Cantabular Dataset not found"
+          description: "Dataset not found"
           schema:
             $ref: '#/definitions/ErrorResponse'
         500:
@@ -87,12 +87,12 @@ paths:
             $ref: '#/definitions/GetAreaTypeParentsResponse'
   /dimensions:
     get:
-      summary: "Get list of geography dimensions for given Cantabular Dataset "
+      summary: "Get list of geography dimensions for given Dataset "
       description: ""
       produces:
       - "application/json"
       parameters:
-        - name: cantabular_dataset
+        - name: dataset
           type: string
           in: query
           required: true
@@ -123,10 +123,10 @@ responses:
   InternalServerError:
     description: "Failed to process the request due to an internal error"
   BadGateway:
-    description: "Failed to process the request due to an error in the cantabular server or api extension"
+    description: "Failed to process the request due to an error in a downstream server"
 definitions:
   GetAreaTypesResponse:
-    description: "The response body containing all available area-types for a given Cantabular dataset"
+    description: "The response body containing all available area-types for a given dataset"
     properties:
       area-types:
         type: array
@@ -140,7 +140,7 @@ definitions:
         - id: "city"
           label: "City"
   GetAreaTypeResponse:
-    description: "The response body containing all available area-types for a given Cantabular dataset"
+    description: "The response body containing all available area-types for a given dataset"
     properties:
       area-type:
         allOf:
@@ -194,7 +194,7 @@ definitions:
       parent:
         type: string
   GetDimensionsResponse:
-    description: "The response body containing dimensions for a given Cantabular dataset"
+    description: "The response body containing dimensions for a given dataset"
     properties:
       dimensions:
         type: array
@@ -206,19 +206,19 @@ definitions:
             href: "http://localhost:22400/code-lists/city"
             id: "city"
           options:
-            href: "http://localhost:22000/datasets/cantabular-example-1/editions/2021/versions/1/dimensions/city/options"
+            href: "http://localhost:22000/datasets/example-1/editions/2021/versions/1/dimensions/city/options"
             id: "city"
           version:
-            href: "http://localhost:22000/datasets/cantabular-example-1/editions/2021/versions/1"
+            href: "http://localhost:22000/datasets/example-1/editions/2021/versions/1"
         - name: "region"
           code_list:
             href: "http://localhost:22400/code-lists/region"
             id: "region"
           options:
-            href: "http://localhost:22000/datasets/cantabular-example-1/editions/2021/versions/1/dimensions/region/options"
+            href: "http://localhost:22000/datasets/example-1/editions/2021/versions/1/dimensions/region/options"
             id: "city"
           version:
-            href: "http://localhost:22000/datasets/cantabular-example-1/editions/2021/versions/1"
+            href: "http://localhost:22000/datasets/example-1/editions/2021/versions/1"
   GetDimensionOptionsResponse:
     description: "The response body containing options for a given Dimension"
     properties:
@@ -235,7 +235,7 @@ definitions:
             href: "http://localhost:22400/code-lists/city/codes/1"
             id: "1"
           version:
-            href: "http://localhost:22000/datasets/cantabular-example-1/editions/2021/versions/1"            
+            href: "http://localhost:22000/datasets/example-1/editions/2021/versions/1"            
         - name: "Belfast"
           code_list:
             href: "http://localhost:22400/code-lists/city"
@@ -244,7 +244,7 @@ definitions:
             href: "http://localhost:22400/code-lists/city/codes/2"
             id: "2"
           version:
-            href: "http://localhost:22000/datasets/cantabular-example-1/editions/2021/versions/1"
+            href: "http://localhost:22000/datasets/example-1/editions/2021/versions/1"
   ErrorResponse:
     description: "The response body containing an error message"
     properties:

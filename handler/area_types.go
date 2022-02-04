@@ -9,10 +9,6 @@ import (
 	"github.com/pkg/errors"
 )
 
-const (
-	ParamCantabularDataset = "cantabular_dataset"
-)
-
 // AreaTypes handles requests to /area-types
 type AreaTypes struct {
 	respond responder
@@ -37,9 +33,9 @@ func (at *AreaTypes) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	res, err := at.ctblr.GetGeographyDimensions(ctx, req.CantabularDataset)
+	res, err := at.ctblr.GetGeographyDimensions(ctx, req.Dataset)
 	if err != nil {
-		at.respond.Error(ctx, w, errors.Wrap(err, "failed to get area-types from cantabular"))
+		at.respond.Error(ctx, w, errors.Wrap(err, "failed to get area-types"))
 		return
 	}
 

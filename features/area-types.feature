@@ -59,7 +59,7 @@ Feature: Area Types
         }
       }
       """
-    And I GET "/area-types?cantabular_dataset=Example"
+    And I GET "/area-types?dataset=Example"
 
     Then I should receive the following JSON response:
       """
@@ -80,7 +80,7 @@ Feature: Area Types
     And the HTTP status code should be "200"
 
 
-  Scenario: Getting area-types no cantabular_dataset
+  Scenario: Getting area-types no dataset
 
     When the following geography query response is available from Cantabular api extension for the dataset "":
       """
@@ -177,13 +177,13 @@ Feature: Area Types
       }
       """
 
-    And I GET "/area-types?cantabular_dataset=Inexistent"
+    And I GET "/area-types?dataset=Inexistent"
 
     Then I should receive the following JSON response:
       """
       {
         "errors":[
-          "failed to get area-types from cantabular: error(s) returned by graphQL query"
+          "failed to get area-types: error(s) returned by graphQL query"
         ]
       }
       """
