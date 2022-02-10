@@ -36,7 +36,9 @@ func (f *ComponentTest) InitializeScenario(ctx *godog.ScenarioContext) {
 		log.Panicf("unable to initialize component: %s", err)
 	}
 
-	component.Init()
+	if _, err := component.Init(); err != nil{
+		log.Panicf("failed to initialise component: %s", err)
+	}
 
 	apiFeature := cmptest.NewAPIFeature(component.Init)
 

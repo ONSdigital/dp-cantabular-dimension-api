@@ -21,7 +21,6 @@ var (
 	testBuildTime = "12"
 	testGitCommit = "GitCommit"
 	testVersion   = "Version"
-	errServer     = errors.New("HTTP Server error")
 )
 
 var errHealthcheck = errors.New("could not get healthcheck")

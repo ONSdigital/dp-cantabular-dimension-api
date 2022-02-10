@@ -10,7 +10,6 @@ import (
 
 	"github.com/gorilla/schema"
 	"github.com/pkg/errors"
-
 )
 
 // AreaTypes handles requests to /area-types
