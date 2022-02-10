@@ -5,8 +5,12 @@ import (
 
 	"github.com/ONSdigital/dp-cantabular-dimension-api/contract"
 	"github.com/ONSdigital/dp-cantabular-dimension-api/model"
+
+	dperrors "github.com/ONSdigital/dp-net/v2/errors"
+
 	"github.com/gorilla/schema"
 	"github.com/pkg/errors"
+
 )
 
 // AreaTypes handles requests to /area-types
@@ -24,18 +28,28 @@ func NewAreaTypes(r responder, c cantabularClient) *AreaTypes {
 }
 
 // Get is the handler for GET /area-types
-func (at *AreaTypes) Get(w http.ResponseWriter, r *http.Request) {
+func (h *AreaTypes) Get(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	var req contract.GetAreaTypesRequest
 	if err := schema.NewDecoder().Decode(&req, r.URL.Query()); err != nil {
-		at.respond.ErrorWithStatus(ctx, w, http.StatusBadRequest, errors.Wrap(err, "failed to decode query parameter from get area-types request"))
+		h.respond.Error(
+			ctx,
+			w,
+			http.StatusBadRequest,
+			errors.Wrap(err, "failed to decode query parameters"),
+		)
 		return
 	}
 
-	res, err := at.ctblr.GetGeographyDimensions(ctx, req.Dataset)
+	res, err := h.ctblr.GetGeographyDimensions(ctx, req.Dataset)
 	if err != nil {
-		at.respond.Error(ctx, w, errors.Wrap(err, "failed to get area-types"))
+		h.respond.Error(
+			ctx,
+			w,
+			dperrors.StatusCode(err), // Can be changed to ctblr.StatusCode(err) once added to Client
+			errors.Wrap(err, "failed to get area-types"),
+		)
 		return
 	}
 
@@ -50,5 +64,5 @@ func (at *AreaTypes) Get(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	at.respond.JSON(ctx, w, http.StatusOK, resp)
+	h.respond.JSON(ctx, w, http.StatusOK, resp)
 }

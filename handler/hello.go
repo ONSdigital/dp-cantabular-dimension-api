@@ -7,6 +7,7 @@ import (
 	"github.com/ONSdigital/dp-cantabular-dimension-api/contract"
 
 	"github.com/ONSdigital/dp-api-clients-go/v2/cantabular"
+	dperrors "github.com/ONSdigital/dp-net/v2/errors"
 
 	"github.com/pkg/errors"
 )
@@ -42,7 +43,12 @@ func (h *Hello) Create(w http.ResponseWriter, r *http.Request) {
 	var req contract.CreateHelloRequest
 
 	if err := parseRequest(r.Body, &req); err != nil {
-		h.respond.Error(ctx, w, fmt.Errorf("failed to parse request: %w", err))
+		h.respond.Error(
+			ctx,
+			w,
+			http.StatusBadRequest,
+			fmt.Errorf("failed to parse request: %w", err),
+		)
 		return
 	}
 	defer r.Body.Close()
@@ -55,7 +61,11 @@ func (h *Hello) Create(w http.ResponseWriter, r *http.Request) {
 
 	resp, err := h.ctblr.GetCodebook(ctx, cReq)
 	if err != nil {
-		h.respond.Error(ctx, w, errors.Wrap(err, "failed to get Codebook"))
+		h.respond.Error(ctx,
+			w,
+			dperrors.StatusCode(err),
+			errors.Wrap(err, "failed to get Codebook"),
+		)
 		return
 	}
 
