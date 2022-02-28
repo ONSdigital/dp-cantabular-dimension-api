@@ -1,7 +1,8 @@
 package model
 
-// AreaType is an area-type model with ID and Label
+// Areas is an area model with ID and Label
 type Areas struct {
-	ID    string `json:"id"`
-	Label string `json:"label"`
+	ID       string `json:"id"`
+	Label    string `json:"label"`
+	AreaType string `json:"area-type"`
 }
