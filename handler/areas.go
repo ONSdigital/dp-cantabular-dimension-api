@@ -55,14 +55,13 @@ func (h *Areas) Get(w http.ResponseWriter, r *http.Request) {
 	var resp contract.GetAreasResponse
 
 	if res != nil {
-		for _, edge := range res.Dataset.RuleBase.IsSourceOf.Search.Edges {
-			for _, catEdge := range edge.Node.Categories.Edges {
-				resp.Areas = append(resp.Areas, model.Areas{
-					ID:       catEdge.Node.Code,
-					Label:    catEdge.Node.Label,
-					AreaType: catEdge.Node.Variable.Name,
-				})
-			}
+		for _, edge := range res.Dataset.RuleBase.IsSourceOf.CategorySearch.Edges {
+			resp.Areas = append(resp.Areas, model.Areas{
+				ID:       edge.Node.Code,
+				Label:    edge.Node.Label,
+				AreaType: edge.Node.Variable.Name,
+			})
+
 		}
 	}
 

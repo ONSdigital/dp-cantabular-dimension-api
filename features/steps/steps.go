@@ -86,7 +86,7 @@ func (c *Component) theFollowingCantabularAreaResponseIsAvailable(dataset string
 		Dataset: dataset,
 	}
 
-	b, err := data.Encode(cantabular.QueryAreasByAreaType)
+	b, err := data.Encode(cantabular.QueryAreasByArea)
 	if err != nil {
 		return fmt.Errorf("failed to encode GraphQL query: %w", err)
 	}
@@ -107,7 +107,7 @@ func (c *Component) theFollowingCantabularAreaTextResponseIsAvailable(dataset st
 		Text:    text,
 	}
 
-	b, err := data.Encode(cantabular.QueryAreasByAreaType)
+	b, err := data.Encode(cantabular.QueryAreasByArea)
 	if err != nil {
 		return fmt.Errorf("failed to encode GraphQL query: %w", err)
 	}

@@ -11,89 +11,83 @@ Feature: Areas
   Scenario: Getting areas happy
     When the following area query response is available from Cantabular api extension for the dataset "Example":
       """
-     {
+    {
   "data": {
     "dataset": {
       "ruleBase": {
         "isSourceOf": {
-          "search": {
+          "categorySearch": {
             "edges": [
               {
                 "node": {
-                  "categories": {
-                    "edges": [
+                  "code": "E",
+                  "label": "England",
+                  "variable": {
+                    "mapFrom": [
                       {
-                        "node": {
-                          "code": "E",
-                          "label": "England",
-                          "variable": {
-                            "name": "country"
+                        "edges": [
+                          {
+                            "node": {
+                              "label": "City",
+                              "name": "city"
+                            }
                           }
-                        }
-                      },
-                      {
-                        "node": {
-                          "code": "N",
-                          "label": "Northern Ireland",
-                          "variable": {
-                            "name": "country"
-                          }
-                        }
+                        ]
                       }
                     ],
-                    "totalCount": 2
-                  },
-                  "mapFrom": [
-                    {
-                      "edges": [
-                        {
-                          "node": {
-                            "label": "City",
-                            "name": "city"
-                          }
-                        }
-                      ]
-                    }
-                  ],
-                  "name": "country"
+                    "name": "country"
+                  }
                 }
               },
               {
                 "node": {
-                  "categories": {
-                    "edges": [
+                  "code": "N",
+                  "label": "Northern Ireland",
+                  "variable": {
+                    "mapFrom": [
                       {
-                        "node": {
-                          "code": "0",
-                          "label": "London",
-                          "variable": {
-                            "name": "city"
+                        "edges": [
+                          {
+                            "node": {
+                              "label": "City",
+                              "name": "city"
+                            }
                           }
-                        }
-                      },
-                      {
-                        "node": {
-                          "code": "1",
-                          "label": "Liverpool",
-                          "variable": {
-                            "name": "city"
-                          }
-                        }
-                      },
-                      {
-                        "node": {
-                          "code": "2",
-                          "label": "Belfast",
-                          "variable": {
-                            "name": "city"
-                          }
-                        }
+                        ]
                       }
                     ],
-                    "totalCount": 3
-                  },
-                  "mapFrom": [],
-                  "name": "city"
+                    "name": "country"
+                  }
+                }
+              },
+              {
+                "node": {
+                  "code": "0",
+                  "label": "London",
+                  "variable": {
+                    "mapFrom": [],
+                    "name": "city"
+                  }
+                }
+              },
+              {
+                "node": {
+                  "code": "1",
+                  "label": "Liverpool",
+                  "variable": {
+                    "mapFrom": [],
+                    "name": "city"
+                  }
+                }
+              },
+              {
+                "node": {
+                  "code": "2",
+                  "label": "Belfast",
+                  "variable": {
+                    "mapFrom": [],
+                    "name": "city"
+                  }
                 }
               }
             ]
@@ -142,51 +136,23 @@ Feature: Areas
     And the HTTP status code should be "200"
 
   Scenario: Getting areas specific search
-    When the following area query response is available from Cantabular api extension for the dataset "Example" and text "City":
+    When the following area query response is available from Cantabular api extension for the dataset "Example" and text "London":
     """
     {
   "data": {
     "dataset": {
       "ruleBase": {
         "isSourceOf": {
-          "search": {
+          "categorySearch": {
             "edges": [
               {
                 "node": {
-                  "categories": {
-                    "edges": [
-                      {
-                        "node": {
-                          "code": "0",
-                          "label": "London",
-                          "variable": {
-                            "name": "city"
-                          }
-                        }
-                      },
-                      {
-                        "node": {
-                          "code": "1",
-                          "label": "Liverpool",
-                          "variable": {
-                            "name": "city"
-                          }
-                        }
-                      },
-                      {
-                        "node": {
-                          "code": "2",
-                          "label": "Belfast",
-                          "variable": {
-                            "name": "city"
-                          }
-                        }
-                      }
-                    ],
-                    "totalCount": 3
-                  },
-                  "mapFrom": [],
-                  "name": "city"
+                  "code": "0",
+                  "label": "London",
+                  "variable": {
+                    "mapFrom": [],
+                    "name": "city"
+                  }
                 }
               }
             ]
@@ -198,25 +164,15 @@ Feature: Areas
 }
     """
 
-    And I GET "/areas?dataset=Example&text=City"
+    And I GET "/areas?dataset=Example&text=London"
 
     Then I should receive the following JSON response:
     """
-    {
+   {
     "areas": [
         {
             "id": "0",
             "label": "London",
-            "area-type": "city"
-        },
-        {
-            "id": "1",
-            "label": "Liverpool",
-            "area-type": "city"
-        },
-        {
-            "id": "2",
-            "label": "Belfast",
             "area-type": "city"
         }
     ]
@@ -226,89 +182,83 @@ Feature: Areas
     Scenario: Getting areas no dataset or search text
       When the following area query response is available from Cantabular api extension for the dataset "" and text "":
       """
-      {
+  {
   "data": {
     "dataset": {
       "ruleBase": {
         "isSourceOf": {
-          "search": {
+          "categorySearch": {
             "edges": [
               {
                 "node": {
-                  "categories": {
-                    "edges": [
+                  "code": "E",
+                  "label": "England",
+                  "variable": {
+                    "mapFrom": [
                       {
-                        "node": {
-                          "code": "E",
-                          "label": "England",
-                          "variable": {
-                            "name": "country"
+                        "edges": [
+                          {
+                            "node": {
+                              "label": "City",
+                              "name": "city"
+                            }
                           }
-                        }
-                      },
-                      {
-                        "node": {
-                          "code": "N",
-                          "label": "Northern Ireland",
-                          "variable": {
-                            "name": "country"
-                          }
-                        }
+                        ]
                       }
                     ],
-                    "totalCount": 2
-                  },
-                  "mapFrom": [
-                    {
-                      "edges": [
-                        {
-                          "node": {
-                            "label": "City",
-                            "name": "city"
-                          }
-                        }
-                      ]
-                    }
-                  ],
-                  "name": "country"
+                    "name": "country"
+                  }
                 }
               },
               {
                 "node": {
-                  "categories": {
-                    "edges": [
+                  "code": "N",
+                  "label": "Northern Ireland",
+                  "variable": {
+                    "mapFrom": [
                       {
-                        "node": {
-                          "code": "0",
-                          "label": "London",
-                          "variable": {
-                            "name": "city"
+                        "edges": [
+                          {
+                            "node": {
+                              "label": "City",
+                              "name": "city"
+                            }
                           }
-                        }
-                      },
-                      {
-                        "node": {
-                          "code": "1",
-                          "label": "Liverpool",
-                          "variable": {
-                            "name": "city"
-                          }
-                        }
-                      },
-                      {
-                        "node": {
-                          "code": "2",
-                          "label": "Belfast",
-                          "variable": {
-                            "name": "city"
-                          }
-                        }
+                        ]
                       }
                     ],
-                    "totalCount": 3
-                  },
-                  "mapFrom": [],
-                  "name": "city"
+                    "name": "country"
+                  }
+                }
+              },
+              {
+                "node": {
+                  "code": "0",
+                  "label": "London",
+                  "variable": {
+                    "mapFrom": [],
+                    "name": "city"
+                  }
+                }
+              },
+              {
+                "node": {
+                  "code": "1",
+                  "label": "Liverpool",
+                  "variable": {
+                    "mapFrom": [],
+                    "name": "city"
+                  }
+                }
+              },
+              {
+                "node": {
+                  "code": "2",
+                  "label": "Belfast",
+                  "variable": {
+                    "mapFrom": [],
+                    "name": "city"
+                  }
                 }
               }
             ]

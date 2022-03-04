@@ -13,6 +13,7 @@ services:
             - -component
         volumes:
             - ../../:/dp-cantabular-dimension-api
+            - /Users/francesmoore/src/github.com/ONSdigital/dp-api-clients-go:/Users/francesmoore/src/github.com/ONSdigital/dp-api-clients-go
         ports:
             - 27200:27200
         environment:
