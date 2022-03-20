@@ -56,7 +56,6 @@ func (s *DimensionOptions) Get(w http.ResponseWriter, r *http.Request) {
 
 	var response contract.GetDimensionOptionsResponse
 	if cantabularResponse != nil {
-		// TODO: the cantabular response not map the dimension option response
 		for _, dimension := range cantabularResponse.Dataset.Table.Dimensions {
 			for _, category := range dimension.Categories {
 				option := model.DimensionOption{
