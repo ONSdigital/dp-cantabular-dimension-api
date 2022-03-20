@@ -36,6 +36,7 @@ func (svc *Service) publicEndpoints(ctx context.Context) {
 
 	svc.router.Get("/area-types", areaTypes.Get)
 	svc.router.Get("/areas", areas.Get)
+	svc.router.Get("/area-types/{area-type}/parents", areaTypes.GetAreaTypeParents)
 }
 
 func (svc *Service) privateEndpoints(ctx context.Context) {
@@ -59,6 +60,7 @@ func (svc *Service) privateEndpoints(ctx context.Context) {
 
 	r.Get("/area-types", areaTypes.Get)
 	r.Get("/areas", areas.Get)
+	r.Get("/area-types/{area-type}/parents", areaTypes.GetAreaTypeParents)
 
 	svc.router.Mount("/", r)
 }

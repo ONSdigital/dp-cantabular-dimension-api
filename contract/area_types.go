@@ -11,3 +11,14 @@ type GetAreaTypesRequest struct {
 type GetAreaTypesResponse struct {
 	AreaTypes []model.AreaType `json:"area-types"`
 }
+
+// GetAreaTypeParentsRequest defines the schema for the GET /area-types/{area-type}/parents query parameter
+type GetAreaTypeParentsRequest struct {
+	Dataset  string `schema:"dataset"`
+	AreaType string `schema:"area-type"`
+}
+
+// GetAreaTypeParentsResponse is the response object for GET /area-types/{area-type}/parents
+type GetAreaTypeParentsResponse struct {
+	AreaTypes []model.AreaType `json:"area-types"`
+}
