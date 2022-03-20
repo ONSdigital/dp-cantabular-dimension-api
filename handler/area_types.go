@@ -65,3 +65,48 @@ func (h *AreaTypes) Get(w http.ResponseWriter, r *http.Request) {
 
 	h.respond.JSON(ctx, w, http.StatusOK, resp)
 }
+
+// GetAreaTypeParents is the handler for GET /area-types/{area-type}/parents
+func (h *AreaTypes) GetAreaTypeParents(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var request contract.GetAreaTypeParentsRequest
+	if err := schema.NewDecoder().Decode(&request, r.URL.Query()); err != nil {
+		h.respond.Error(
+			ctx,
+			w,
+			http.StatusBadRequest,
+			errors.Wrap(err, "failed to decode query parameters"),
+		)
+		return
+	}
+
+	cantabularResponse, err := h.ctblr.GetGeographyDimensions(ctx, request.Dataset)
+	if err != nil {
+		h.respond.Error(
+			ctx,
+			w,
+			dperrors.StatusCode(err), // Can be changed to ctblr.StatusCode(err) once added to Client
+			errors.Wrap(err, "failed to get area-types"),
+		)
+		return
+	}
+
+	var response contract.GetAreaTypeParentsResponse
+	if cantabularResponse != nil {
+		for _, edge := range cantabularResponse.Dataset.RuleBase.IsSourceOf.Edges {
+			if request.AreaType == edge.Node.Name {
+				for _, parent := range edge.Node.MapFrom {
+					for _, edge := range parent.Edges {
+						response.AreaTypes = append(response.AreaTypes, model.AreaType{
+							ID:    edge.Node.Name,
+							Label: edge.Node.Label,
+						})
+					}
+				}
+			}
+		}
+	}
+
+	h.respond.JSON(ctx, w, http.StatusOK, response)
+}
