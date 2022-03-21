@@ -1,7 +1,7 @@
 package model
 
-// LinkObject represents a generic structure for all links
-type LinkObject struct {
+// Link represents a generic structure for all links
+type Link struct {
 	HRef string `json:"href"`
 	ID   string `json:"id"`
 }
@@ -12,9 +12,9 @@ type DimensionOption struct {
 	Links DimensionOptionLinks `json:"links"`
 }
 
-// DimensionOptionLinks represents a list of link objects related to dimension options
+// DimensionOptionLinks represents a list of links related to dimension options
 type DimensionOptionLinks struct {
-	Code     LinkObject `json:"code"`
-	CodeList LinkObject `json:"code_list"`
-	Version  LinkObject `json:"version"`
+	Code     Link `json:"code"`
+	CodeList Link `json:"code_list"`
+	Version  Link `json:"version"`
 }

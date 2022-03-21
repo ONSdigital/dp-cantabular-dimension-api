@@ -7,7 +7,7 @@ import (
 	"github.com/ONSdigital/dp-cantabular-dimension-api/contract"
 	"github.com/ONSdigital/dp-cantabular-dimension-api/model"
 	dperrors "github.com/ONSdigital/dp-net/v2/errors"
-	"github.com/gorilla/schema"
+	"github.com/go-chi/chi/v5"
 	"github.com/pkg/errors"
 )
 
@@ -29,19 +29,9 @@ func NewDimensionOptions(r responder, c cantabularClient) *DimensionOptions {
 func (s *DimensionOptions) Get(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	var request contract.GetDimensionOptionsRequest
-	if err := schema.NewDecoder().Decode(&request, r.URL.Query()); err != nil {
-		s.respond.Error(
-			ctx,
-			w,
-			http.StatusBadRequest,
-			errors.Wrap(err, "failed to decode query parameters"),
-		)
-		return
-	}
-
+	dimension := chi.URLParam(r, "dimension")
 	cantabularRequest := cantabular.GetDimensionOptionsRequest{
-		DimensionNames: []string{request.Dimension},
+		DimensionNames: []string{dimension},
 	}
 	cantabularResponse, err := s.ctblr.GetDimensionOptions(ctx, cantabularRequest)
 	if err != nil {
@@ -61,12 +51,12 @@ func (s *DimensionOptions) Get(w http.ResponseWriter, r *http.Request) {
 				option := model.DimensionOption{
 					Name: dimension.Variable.Name,
 					Links: model.DimensionOptionLinks{
-						Code: model.LinkObject{
+						Code: model.Link{
 							ID: category.Code,
 						},
 					},
 				}
-				response.Options = append(response.Options, &option)
+				response.Options = append(response.Options, option)
 			}
 		}
 	}
