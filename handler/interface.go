@@ -16,6 +16,7 @@ type cantabularClient interface {
 	GetCodebook(ctx context.Context, req cantabular.GetCodebookRequest) (*cantabular.GetCodebookResponse, error)
 	GetGeographyDimensions(ctx context.Context, dataset string) (*cantabular.GetGeographyDimensionsResponse, error)
 	GetAreas(ctx context.Context, req cantabular.QueryData) (*cantabular.GetAreasResponse, error)
+	GetDimensionOptions(ctx context.Context, req cantabular.GetDimensionOptionsRequest) (*cantabular.GetDimensionOptionsResponse, error)
 }
 
 type validator interface {
