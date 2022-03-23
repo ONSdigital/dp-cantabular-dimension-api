@@ -14,7 +14,7 @@ type Config struct {
 	HealthCheckCriticalTimeout   time.Duration `envconfig:"HEALTHCHECK_CRITICAL_TIMEOUT"`
 	ZebedeeURL                   string        `envconfig:"ZEBEDEE_URL"`
 	CantabularURL                string        `envconfig:"CANTABULAR_URL"`
-	CantabularExtURL             string        `envconfig:"CANTABULAR_EXT_API_URL"`
+	CantabularExtURL             string        `envconfig:"CANTABULAR_API_EXT_URL"`
 	ComponentTestUseLogFile      bool          `envconfig:"COMPONENT_TEST_USE_LOG_FILE"`
 	EnablePrivateEndpoints       bool          `envconfig:"ENABLE_PRIVATE_ENDPOINTS"`
 	EnablePermissionsAuth        bool          `envconfig:"ENABLE_PERMISSIONS_AUTH"`
