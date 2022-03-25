@@ -135,10 +135,13 @@ definitions:
         example: 
         - id: "electoral_wards"
           label: "Electoral Wards or Divisions"
+          total_count: 1
         - id: "region"
           label: "Region"
+          total_count: 2
         - id: "city"
           label: "City"
+          total_count: 3
   GetAreaTypeResponse:
     description: "The response body containing all available area-types for a given dataset"
     properties:
@@ -185,6 +188,8 @@ definitions:
         type: string
       label:
         type: string
+      total_count:
+        type: integer
   Area:
     properties:
       id:
