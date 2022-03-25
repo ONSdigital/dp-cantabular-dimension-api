@@ -57,8 +57,9 @@ func (h *AreaTypes) Get(w http.ResponseWriter, r *http.Request) {
 	if res != nil {
 		for _, edge := range res.Dataset.RuleBase.IsSourceOf.Edges {
 			resp.AreaTypes = append(resp.AreaTypes, model.AreaType{
-				ID:    edge.Node.Name,
-				Label: edge.Node.Label,
+				ID:         edge.Node.Name,
+				Label:      edge.Node.Label,
+				TotalCount: edge.Node.Categories.TotalCount,
 			})
 		}
 	}

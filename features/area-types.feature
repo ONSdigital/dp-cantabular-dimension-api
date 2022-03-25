@@ -67,11 +67,13 @@ Feature: Area Types
         "area-types":[
           {
             "id":"country",
-            "label":"Country"
+            "label":"Country",
+            "total_count": 2
           },
           {
             "id":"city",
-            "label":"City"
+            "label":"City",
+            "total_count": 3
           }
         ]
       }
@@ -139,11 +141,13 @@ Feature: Area Types
         "area-types":[
           {
             "id":"country",
-            "label":"Country"
+            "label":"Country",
+            "total_count": 2
           },
           {
             "id":"city",
-            "label":"City"
+            "label":"City",
+            "total_count": 3
           }
         ]
       }
