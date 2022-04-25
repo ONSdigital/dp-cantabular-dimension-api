@@ -49,11 +49,15 @@ func (h *Areas) Get(w http.ResponseWriter, r *http.Request) {
 
 	areas, err := h.ctblr.GetAreas(ctx, areaTypeReq)
 	if err != nil {
+		msg := "failed to get areas"
 		h.respond.Error(
 			ctx,
 			w,
 			dperrors.StatusCode(err), // Can be changed to ctblr.StatusCode(err) once added to Client
-			errors.Wrap(err, "failed to get areas"),
+			&Error{
+				err:     errors.Wrap(err, msg),
+				message: msg,
+			},
 		)
 		return
 	}

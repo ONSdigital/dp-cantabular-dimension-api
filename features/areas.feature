@@ -296,7 +296,7 @@ Feature: Areas
     """
     {
       "errors": [
-        "failed to get areas: error(s) returned by graphQL query"
+        "failed to get areas"
       ]
     }
     """
