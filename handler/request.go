@@ -10,6 +10,10 @@ import (
 	"github.com/pkg/errors"
 )
 
+const (
+	defaultLimit = 20
+)
+
 // parseRequest attemts to read unmarshal a request body into a
 // request object, returning an appropriate error on failure.
 // 'req' must be a pointer to a struct.

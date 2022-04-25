@@ -3,8 +3,10 @@ package handler
 import (
 	"net/http"
 
+	"github.com/ONSdigital/dp-api-clients-go/v2/cantabular"
 	"github.com/ONSdigital/dp-cantabular-dimension-api/contract"
 	"github.com/ONSdigital/dp-cantabular-dimension-api/model"
+	"github.com/ONSdigital/log.go/v2/log"
 
 	dperrors "github.com/ONSdigital/dp-net/v2/errors"
 
@@ -41,7 +43,17 @@ func (h *AreaTypes) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	res, err := h.ctblr.GetGeographyDimensions(ctx, req.Dataset)
+	if req.Limit == 0 {
+		req.Limit = 20
+	}
+
+	cReq := cantabular.GetGeographyDimensionsRequest{
+		Dataset: req.Dataset,
+	}
+	cReq.Limit = req.Limit
+	cReq.Offset = req.Offset
+
+	res, err := h.ctblr.GetGeographyDimensions(ctx, cReq)
 	if err != nil {
 		h.respond.Error(
 			ctx,
@@ -52,9 +64,19 @@ func (h *AreaTypes) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	log.Info(ctx, "Got response from Cantabular", log.Data{
+		"response": res,
+	})
+
 	var resp contract.GetAreaTypesResponse
 
 	if res != nil {
+		resp.PaginationResponse = contract.PaginationResponse{
+			Count:      res.Count,
+			TotalCount: res.TotalCount,
+		}
+		resp.Limit = res.Limit
+		resp.Offset = res.Offset
 		for _, edge := range res.Dataset.RuleBase.IsSourceOf.Edges {
 			resp.AreaTypes = append(resp.AreaTypes, model.AreaType{
 				ID:         edge.Node.Name,

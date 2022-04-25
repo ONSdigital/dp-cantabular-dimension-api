@@ -18,6 +18,7 @@ Feature: Area Types
           "dataset":{
             "ruleBase":{
               "isSourceOf":{
+                "totalCount": 2,
                 "edges":[
                   {
                     "node":{
@@ -66,16 +67,20 @@ Feature: Area Types
       {
         "area-types":[
           {
-            "id":"country",
-            "label":"Country",
+            "id": "country",
+            "label": "Country",
             "total_count": 2
           },
           {
-            "id":"city",
-            "label":"City",
+            "id": "city",
+            "label": "City",
             "total_count": 3
           }
-        ]
+        ],
+        "limit": 20,
+        "offset": 0,
+        "count": 2,
+        "total_count": 2
       }
       """
 
@@ -91,6 +96,7 @@ Feature: Area Types
           "dataset":{
             "ruleBase":{
               "isSourceOf":{
+                "totalCount": 2,
                 "edges":[
                   {
                     "node":{
@@ -103,9 +109,9 @@ Feature: Area Types
                           "edges":[
                             {
                               "node":{
-                                "filterOnly":"false",
-                                "label":"City",
-                                "name":"city"
+                                "filterOnly": "false",
+                                "label": "City",
+                                "name": "city"
                               }
                             }
                           ]
@@ -119,9 +125,9 @@ Feature: Area Types
                       "categories":{
                         "totalCount":3
                       },
-                      "label":"City",
-                      "mapFrom":[],
-                      "name":"city"
+                      "label": "City",
+                      "mapFrom": [],
+                      "name": "city"
                     }
                   }
                 ]
@@ -140,16 +146,20 @@ Feature: Area Types
       {
         "area-types":[
           {
-            "id":"country",
-            "label":"Country",
+            "id": "country",
+            "label": "Country",
             "total_count": 2
           },
           {
-            "id":"city",
-            "label":"City",
+            "id": "city",
+            "label": "City",
             "total_count": 3
           }
-        ]
+        ],
+        "limit": 20,
+        "offset": 0,
+        "count": 2,
+        "total_count": 2
       }
       """
 

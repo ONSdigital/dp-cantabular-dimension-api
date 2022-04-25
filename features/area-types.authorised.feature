@@ -22,6 +22,7 @@ Feature: Area Types Private Endpoints Enabled
           "dataset":{
             "ruleBase":{
               "isSourceOf":{
+                "totalCount": 2,
                 "edges":[
                   {
                     "node":{
@@ -80,7 +81,11 @@ Feature: Area Types Private Endpoints Enabled
             "label": "City",
             "total_count": 3
           }
-        ]
+        ],
+        "limit": 20,
+        "offset": 0,
+        "count": 2,
+        "total_count": 2
       }
       """
 
