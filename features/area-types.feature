@@ -203,3 +203,82 @@ Feature: Area Types
       """
 
     And the HTTP status code should be "404"
+
+  Scenario: Getting area-types invalid query parameters
+
+    When the following geography query response is available from Cantabular api extension for the dataset "Example":
+      """
+      {
+        "data":{
+          "dataset":{
+            "ruleBase":{
+              "isSourceOf":{
+                "totalCount": 2,
+                "edges":[
+                  {
+                    "node":{
+                      "categories":{
+                        "totalCount":2
+                      },
+                      "label":"Country",
+                      "mapFrom":[
+                        {
+                          "edges":[
+                            {
+                              "node":{
+                                "filterOnly":"false",
+                                "label":"City",
+                                "name":"city"
+                              }
+                            }
+                          ]
+                        }
+                      ],
+                      "name":"country"
+                    }
+                  },
+                  {
+                    "node":{
+                      "categories":{
+                        "totalCount":3
+                      },
+                      "label":"City",
+                      "mapFrom":[],
+                      "name":"city"
+                    }
+                  }
+                ]
+              },
+              "name":"city"
+            }
+          }
+        }
+      }
+    
+      """
+
+    When I GET "/area-types?dataset=Example&limit=-1"
+    
+    Then I should receive the following JSON response:
+      """
+      {
+        "errors":[
+          "invalid query parameters: 'limit' must be greater than 0"
+        ]
+      }
+      """
+
+    And the HTTP status code should be "400"
+
+    When I GET "/area-types?dataset=Example&offset=-1"
+    
+    Then I should receive the following JSON response:
+      """
+      {
+        "errors":[
+          "invalid query parameters: 'offset' must be greater than 0"
+        ]
+      }
+      """
+
+    And the HTTP status code should be "400"

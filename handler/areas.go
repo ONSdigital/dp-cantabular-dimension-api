@@ -6,7 +6,6 @@ import (
 	"github.com/ONSdigital/dp-api-clients-go/v2/cantabular"
 	"github.com/ONSdigital/dp-cantabular-dimension-api/contract"
 	"github.com/ONSdigital/dp-cantabular-dimension-api/model"
-	dperrors "github.com/ONSdigital/dp-net/v2/errors"
 	"github.com/gorilla/schema"
 
 	"github.com/pkg/errors"
@@ -46,7 +45,7 @@ func (h *Areas) Get(w http.ResponseWriter, r *http.Request) {
 		h.respond.Error(
 			ctx,
 			w,
-			dperrors.StatusCode(err), // Can be changed to ctblr.StatusCode(err) once added to Client
+			h.ctblr.StatusCode(err),
 			errors.Wrap(err, "failed to get areas"),
 		)
 		return

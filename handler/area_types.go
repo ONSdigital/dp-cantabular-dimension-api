@@ -7,10 +7,8 @@ import (
 	"github.com/ONSdigital/dp-cantabular-dimension-api/contract"
 	"github.com/ONSdigital/dp-cantabular-dimension-api/model"
 	"github.com/ONSdigital/log.go/v2/log"
-
-	dperrors "github.com/ONSdigital/dp-net/v2/errors"
-
 	"github.com/gorilla/schema"
+
 	"github.com/pkg/errors"
 )
 
@@ -43,8 +41,14 @@ func (h *AreaTypes) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if req.Limit == 0 {
-		req.Limit = 20
+	if err := req.Valid(); err != nil {
+		h.respond.Error(
+			ctx,
+			w,
+			http.StatusBadRequest,
+			errors.Wrap(err, "invalid query parameters"),
+		)
+		return
 	}
 
 	cReq := cantabular.GetGeographyDimensionsRequest{
@@ -58,7 +62,7 @@ func (h *AreaTypes) Get(w http.ResponseWriter, r *http.Request) {
 		h.respond.Error(
 			ctx,
 			w,
-			dperrors.StatusCode(err), // Can be changed to ctblr.StatusCode(err) once added to Client
+			h.ctblr.StatusCode(err),
 			errors.Wrap(err, "failed to get area-types"),
 		)
 		return

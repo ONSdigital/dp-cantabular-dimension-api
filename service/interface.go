@@ -47,4 +47,5 @@ type CantabularClient interface {
 	GetAreas(context.Context, cantabular.QueryData) (*cantabular.GetAreasResponse, error)
 	Checker(context.Context, *healthcheck.CheckState) error
 	CheckerAPIExt(ctx context.Context, state *healthcheck.CheckState) error
+	StatusCode(error) int
 }

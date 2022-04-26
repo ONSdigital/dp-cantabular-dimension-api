@@ -13,6 +13,7 @@ type responder interface {
 }
 
 type cantabularClient interface {
+	StatusCode(error) int
 	GetCodebook(context.Context, cantabular.GetCodebookRequest) (*cantabular.GetCodebookResponse, error)
 	GetGeographyDimensions(context.Context, cantabular.GetGeographyDimensionsRequest) (*cantabular.GetGeographyDimensionsResponse, error)
 	GetAreas(context.Context, cantabular.QueryData) (*cantabular.GetAreasResponse, error)

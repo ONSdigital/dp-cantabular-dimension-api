@@ -10,17 +10,13 @@ import (
 	"github.com/pkg/errors"
 )
 
-const (
-	defaultLimit = 20
-)
-
-// parseRequest attemts to read unmarshal a request body into a
-// request object, returning an appropriate error on failure.
+// parseRequest attemts to read unmarshal a request body and read URL
+// params into a request object, returning an appropriate error on failure.
 // 'req' must be a pointer to a struct.
 // ParseRequest will also attempt to call the request's Valid()
 // function if it has one and will throw an error if it fails
-func parseRequest(body io.Reader, req interface{}) error {
-	b, err := io.ReadAll(body)
+func parseRequest(r *http.Request, req interface{}) error {
+	b, err := io.ReadAll(r.Body)
 	if err != nil {
 		return Error{
 			err:     errors.Wrap(err, "failed to read request body"),
@@ -28,11 +24,11 @@ func parseRequest(body io.Reader, req interface{}) error {
 		}
 	}
 
+	// parse request body
 	if err := json.Unmarshal(b, &req); err != nil {
 		return Error{
-			statusCode: http.StatusBadRequest,
-			err:        fmt.Errorf("failed to unmarshal request body: %w", err),
-			message:    "badly formed request body",
+			err:     fmt.Errorf("failed to unmarshal request body: %w", err),
+			message: "badly formed request body",
 			logData: log.Data{
 				"body": string(b),
 			},
@@ -42,8 +38,7 @@ func parseRequest(body io.Reader, req interface{}) error {
 	if v, ok := req.(validator); ok {
 		if err := v.Valid(); err != nil {
 			return Error{
-				statusCode: http.StatusBadRequest,
-				err:        errors.Wrap(err, "invalid request"),
+				err: errors.Wrap(err, "invalid request"),
 				logData: log.Data{
 					"body":    string(b),
 					"request": fmt.Sprintf("%+v", req),
