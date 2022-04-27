@@ -263,7 +263,7 @@ Feature: Area Types
       """
       {
         "errors":[
-          "invalid query parameters: 'limit' must be greater than 0"
+          "failed to parse request: invalid request: 'limit' cannot be a negative value"
         ]
       }
       """
@@ -276,7 +276,7 @@ Feature: Area Types
       """
       {
         "errors":[
-          "invalid query parameters: 'offset' must be greater than 0"
+          "failed to parse request: invalid request: 'offset' cannot be a negative value"
         ]
       }
       """

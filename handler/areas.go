@@ -1,12 +1,12 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/ONSdigital/dp-api-clients-go/v2/cantabular"
 	"github.com/ONSdigital/dp-cantabular-dimension-api/contract"
 	"github.com/ONSdigital/dp-cantabular-dimension-api/model"
-	"github.com/gorilla/schema"
 
 	"github.com/pkg/errors"
 )
@@ -30,12 +30,12 @@ func (h *Areas) Get(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	var req contract.GetAreasRequest
-	if err := schema.NewDecoder().Decode(&req, r.URL.Query()); err != nil {
+	if err := parseRequest(r, &req); err != nil {
 		h.respond.Error(
 			ctx,
 			w,
 			http.StatusBadRequest,
-			errors.Wrap(err, "failed to decode query parameters"),
+			fmt.Errorf("failed to parse request: %w", err),
 		)
 		return
 	}

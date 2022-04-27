@@ -15,11 +15,11 @@ type GetAreaTypesRequest struct {
 // Valid validates the values given in the request
 func (r *GetAreaTypesRequest) Valid() error {
 	if r.Limit < 0 {
-		return errors.New("'limit' must be greater than 0")
+		return errors.New("'limit' cannot be a negative value")
 	}
 
 	if r.Offset < 0 {
-		return errors.New("'offset' must be greater than 0")
+		return errors.New("'offset' cannot be a negative value")
 	}
 
 	if r.Limit == 0 {

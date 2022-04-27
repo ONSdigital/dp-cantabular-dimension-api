@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/ONSdigital/log.go/v2/log"
+	"github.com/gorilla/schema"
 	"github.com/pkg/errors"
 )
 
@@ -25,12 +26,25 @@ func parseRequest(r *http.Request, req interface{}) error {
 	}
 
 	// parse request body
-	if err := json.Unmarshal(b, &req); err != nil {
+	if len(b) > 0 {
+		if err := json.Unmarshal(b, &req); err != nil {
+			return Error{
+				err:     fmt.Errorf("failed to unmarshal request body: %w", err),
+				message: "badly formed request body",
+				logData: log.Data{
+					"body": string(b),
+				},
+			}
+		}
+	}
+
+	// parse URL query params
+	if err := schema.NewDecoder().Decode(req, r.URL.Query()); err != nil {
 		return Error{
-			err:     fmt.Errorf("failed to unmarshal request body: %w", err),
-			message: "badly formed request body",
+			err:     errors.Wrap(err, "failed to decode query parameters"),
+			message: "badly formed query parameters",
 			logData: log.Data{
-				"body": string(b),
+				"query_params": r.URL.Query(),
 			},
 		}
 	}
