@@ -7,7 +7,7 @@ replace github.com/coreos/etcd => github.com/coreos/etcd v3.3.24+incompatible
 replace github.com/ONSdigital/dp-api-clients-go/v2 => /Users/JoshuaMedley/go-modules/ONSdigital/dp-api-clients-go
 
 require (
-	github.com/ONSdigital/dp-api-clients-go/v2 v2.96.11
+	github.com/ONSdigital/dp-api-clients-go/v2 v2.120.0
 	github.com/ONSdigital/dp-authorisation v0.1.0
 	github.com/ONSdigital/dp-component-test v0.6.3
 	github.com/ONSdigital/dp-healthcheck v1.2.3

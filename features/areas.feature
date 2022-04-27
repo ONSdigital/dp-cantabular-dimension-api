@@ -1,366 +1,327 @@
 Feature: Areas
 
   Background:
-
     Given private endpoints are not enabled
-
     And cantabular server is healthy
-
     And cantabular api extension is healthy
 
   Scenario: Getting areas happy
     When the following area query response is available from Cantabular api extension for the dataset "Example":
       """
-    {
-  "data": {
-    "dataset": {
-      "ruleBase": {
-        "isSourceOf": {
-          "categorySearch": {
-            "edges": [
-              {
-                "node": {
-                  "code": "E",
-                  "label": "England",
-                  "variable": {
-                    "mapFrom": [
-                      {
-                        "edges": [
-                          {
-                            "node": {
-                              "label": "City",
-                              "name": "city"
-                            }
+      {
+        "data": {
+          "dataset": {
+            "ruleBase": {
+              "isSourceOf": {
+                "search": {
+                  "edges": [
+                    {
+                      "node": {
+                        "label": "Country",
+                        "name": "country",
+                        "categories": {
+                          "search": {
+                            "edges": [
+                              {
+                                "node": {
+                                  "code": "E",
+                                  "label": "England"
+                                }
+                              },
+                              {
+                                "node": {
+                                  "code": "N",
+                                  "label": "Northern Ireland"
+                                }
+                              }
+                            ]
                           }
-                        ]
+                        }
                       }
-                    ],
-                    "name": "country"
-                  }
-                }
-              },
-              {
-                "node": {
-                  "code": "N",
-                  "label": "Northern Ireland",
-                  "variable": {
-                    "mapFrom": [
-                      {
-                        "edges": [
-                          {
-                            "node": {
-                              "label": "City",
-                              "name": "city"
-                            }
+                    },
+                    {
+                      "node": {
+                        "label": "City",
+                        "name": "city",
+                        "categories": {
+                          "search": {
+                            "edges": [
+                              {
+                                "node": {
+                                  "code": "0",
+                                  "label": "London"
+                                }
+                              },
+                              {
+                                "node": {
+                                  "code": "1",
+                                  "label": "Liverpool"
+                                }
+                              },
+                              {
+                                "node": {
+                                  "code": "2",
+                                  "label": "Belfast"
+                                }
+                              }
+                            ]
                           }
-                        ]
+                        }
                       }
-                    ],
-                    "name": "country"
-                  }
-                }
-              },
-              {
-                "node": {
-                  "code": "0",
-                  "label": "London",
-                  "variable": {
-                    "mapFrom": [],
-                    "name": "city"
-                  }
-                }
-              },
-              {
-                "node": {
-                  "code": "1",
-                  "label": "Liverpool",
-                  "variable": {
-                    "mapFrom": [],
-                    "name": "city"
-                  }
-                }
-              },
-              {
-                "node": {
-                  "code": "2",
-                  "label": "Belfast",
-                  "variable": {
-                    "mapFrom": [],
-                    "name": "city"
-                  }
+                    }
+                  ]
                 }
               }
-            ]
+            }
           }
         }
       }
-    }
-  }
-}
       """
     And I GET "/areas?dataset=Example"
-
     Then I should receive the following JSON response:
       """
       {
-    "areas": [
-        {
+        "areas": [
+          {
             "id": "E",
             "label": "England",
             "area-type": "country"
-        },
-        {
+          },
+          {
             "id": "N",
             "label": "Northern Ireland",
             "area-type": "country"
-        },
-        {
+          },
+          {
             "id": "0",
             "label": "London",
             "area-type": "city"
-        },
-        {
+          },
+          {
             "id": "1",
             "label": "Liverpool",
             "area-type": "city"
-        },
-        {
+          },
+          {
             "id": "2",
             "label": "Belfast",
             "area-type": "city"
-        }
-    ]
-}
+          }
+        ]
+      }
       """
-
     And the HTTP status code should be "200"
 
   Scenario: Getting areas specific search
-    When the following area query response is available from Cantabular api extension for the dataset "Example" and text "London":
+    When the following area query response is available from Cantabular api extension for the dataset "Example", area type "City" and text "London":
     """
     {
-  "data": {
-    "dataset": {
-      "ruleBase": {
-        "isSourceOf": {
-          "categorySearch": {
-            "edges": [
-              {
-                "node": {
-                  "code": "0",
-                  "label": "London",
-                  "variable": {
-                    "mapFrom": [],
-                    "name": "city"
+      "data": {
+        "dataset": {
+          "ruleBase": {
+            "isSourceOf": {
+              "search": {
+                "edges": [
+                  {
+                    "node": {
+                      "label": "City",
+                      "name": "city",
+                      "categories": {
+                        "search": {
+                          "edges": [
+                            {
+                              "node": {
+                                "code": "0",
+                                "label": "London"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
                   }
-                }
+                ]
               }
-            ]
+            }
           }
         }
       }
     }
-  }
-}
     """
-
-    And I GET "/areas?dataset=Example&text=London"
-
-    Then I should receive the following JSON response:
-    """
-   {
-    "areas": [
-        {
-            "id": "0",
-            "label": "London",
-            "area-type": "city"
-        }
-    ]
-}
-    """
-
-    Scenario: Getting areas no dataset or search text
-      When the following area query response is available from Cantabular api extension for the dataset "" and text "":
-      """
-  {
-  "data": {
-    "dataset": {
-      "ruleBase": {
-        "isSourceOf": {
-          "categorySearch": {
-            "edges": [
-              {
-                "node": {
-                  "code": "E",
-                  "label": "England",
-                  "variable": {
-                    "mapFrom": [
-                      {
-                        "edges": [
-                          {
-                            "node": {
-                              "label": "City",
-                              "name": "city"
-                            }
-                          }
-                        ]
-                      }
-                    ],
-                    "name": "country"
-                  }
-                }
-              },
-              {
-                "node": {
-                  "code": "N",
-                  "label": "Northern Ireland",
-                  "variable": {
-                    "mapFrom": [
-                      {
-                        "edges": [
-                          {
-                            "node": {
-                              "label": "City",
-                              "name": "city"
-                            }
-                          }
-                        ]
-                      }
-                    ],
-                    "name": "country"
-                  }
-                }
-              },
-              {
-                "node": {
-                  "code": "0",
-                  "label": "London",
-                  "variable": {
-                    "mapFrom": [],
-                    "name": "city"
-                  }
-                }
-              },
-              {
-                "node": {
-                  "code": "1",
-                  "label": "Liverpool",
-                  "variable": {
-                    "mapFrom": [],
-                    "name": "city"
-                  }
-                }
-              },
-              {
-                "node": {
-                  "code": "2",
-                  "label": "Belfast",
-                  "variable": {
-                    "mapFrom": [],
-                    "name": "city"
-                  }
-                }
-              }
-            ]
-          }
-        }
-      }
-    }
-  }
-}
-      """
-
-      And I GET "/areas"
-
+    And I GET "/areas?dataset=Example&area-type=City&text=London"
     Then I should receive the following JSON response:
     """
     {
-    "areas": [
+      "areas": [
         {
-            "id": "E",
-            "label": "England",
-            "area-type": "country"
-        },
-        {
-            "id": "N",
-            "label": "Northern Ireland",
-            "area-type": "country"
-        },
-        {
-            "id": "0",
-            "label": "London",
-            "area-type": "city"
-        },
-        {
-            "id": "1",
-            "label": "Liverpool",
-            "area-type": "city"
-        },
-        {
-            "id": "2",
-            "label": "Belfast",
-            "area-type": "city"
+          "id": "0",
+          "label": "London",
+          "area-type": "city"
         }
-    ]
-}
-    """
-
-    Scenario: Getting areas invalid dataset
-      When the following area query response is available from Cantabular api extension for the dataset "Test":
-      """
-      {
-  "data": {
-    "dataset": null
-  },
-  "errors": [
-    {
-      "message": "404 Not Found: dataset not loaded in this server",
-      "locations": [
-        {
-          "line": 2,
-          "column": 2
-        }
-      ],
-      "path": [
-        "dataset"
       ]
     }
-  ]
-}
-      """
-    And I GET "/areas?dataset=Test"
+    """
 
-    Then I should receive the following JSON response:
+  Scenario: Getting areas no dataset or search text
+    When the following area query response is available from Cantabular api extension for the dataset "", area type "" and text "":
     """
     {
-    "errors": [
-        "failed to get areas: error(s) returned by graphQL query"
-    ]
-}
-    """
-
-     Scenario: Get areas area does not exist
-       When the following area query response is available from Cantabular api extension for the dataset "Example" and text "rio":
-       """
-       {
-  "data": {
-    "dataset": {
-      "ruleBase": {
-        "isSourceOf": {
-          "search": {
-            "edges": []
+      "data": {
+        "dataset": {
+          "ruleBase": {
+            "isSourceOf": {
+              "search": {
+                "edges": [
+                  {
+                    "node": {
+                      "label": "Country",
+                      "name": "country",
+                      "categories": {
+                        "search": {
+                          "edges": [
+                            {
+                              "node": {
+                                "code": "E",
+                                "label": "England"
+                              }
+                            },
+                            {
+                              "node": {
+                                "code": "N",
+                                "label": "Northern Ireland"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "node": {
+                      "label": "City",
+                      "name": "city",
+                      "categories": {
+                        "search": {
+                          "edges": [
+                            {
+                              "node": {
+                                "code": "0",
+                                "label": "London"
+                              }
+                            },
+                            {
+                              "node": {
+                                "code": "1",
+                                "label": "Liverpool"
+                              }
+                            },
+                            {
+                              "node": {
+                                "code": "2",
+                                "label": "Belfast"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
           }
         }
       }
     }
-  }
-}
-       """
-       And I GET "/areas?dataset=Example&text=rio"
-
+    """
+    And I GET "/areas"
     Then I should receive the following JSON response:
     """
     {
-    "areas": null
+      "areas": [
+        {
+          "id": "E",
+          "label": "England",
+          "area-type": "country"
+        },
+        {
+          "id": "N",
+          "label": "Northern Ireland",
+          "area-type": "country"
+        },
+        {
+          "id": "0",
+          "label": "London",
+          "area-type": "city"
+        },
+        {
+          "id": "1",
+          "label": "Liverpool",
+          "area-type": "city"
+        },
+        {
+          "id": "2",
+          "label": "Belfast",
+          "area-type": "city"
+        }
+      ]
+    }
+    """
+
+  Scenario: Getting areas invalid dataset
+    When the following area query response is available from Cantabular api extension for the dataset "Test":
+    """
+    {
+      "data": {
+        "dataset": null
+      },
+      "errors": [
+        {
+          "message": "404 Not Found: dataset not loaded in this server",
+          "locations": [
+            {
+              "line": 2,
+              "column": 2
+            }
+          ],
+          "path": [
+            "dataset"
+          ]
+        }
+      ]
+    }
+    """
+    And I GET "/areas?dataset=Test"
+    Then I should receive the following JSON response:
+    """
+    {
+      "errors": [
+        "failed to get areas"
+      ]
+    }
+    """
+
+  Scenario: Get areas area does not exist
+    When the following area query response is available from Cantabular api extension for the dataset "Example", area type "", and text "rio":
+    """
+    {
+      "data": {
+        "dataset": {
+          "ruleBase": {
+            "isSourceOf": {
+              "search": {
+                "edges": []
+              }
+            }
+          }
+        }
+      }
+    }
+    """
+    And I GET "/areas?dataset=Example&text=rio"
+    Then I should receive the following JSON response:
+    """
+    {
+      "areas": null
     }
     """

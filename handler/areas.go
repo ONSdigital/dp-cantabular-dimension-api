@@ -29,7 +29,7 @@ func NewAreas(r responder, c cantabularClient) *Areas {
 func (h *Areas) Get(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	var req cantabular.QueryData
+	var req contract.GetAreasRequest
 	if err := schema.NewDecoder().Decode(&req, r.URL.Query()); err != nil {
 		h.respond.Error(
 			ctx,
@@ -40,29 +40,43 @@ func (h *Areas) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	res, err := h.ctblr.GetAreas(ctx, req)
+	areaTypeReq := cantabular.GetAreasRequest{
+		Dataset:  req.Dataset,
+		Variable: req.AreaType,
+		Category: req.Text,
+	}
+
+	areas, err := h.ctblr.GetAreas(ctx, areaTypeReq)
 	if err != nil {
+		msg := "failed to get areas"
 		h.respond.Error(
 			ctx,
 			w,
 			h.ctblr.StatusCode(err),
-			errors.Wrap(err, "failed to get areas"),
+			&Error{
+				err:     errors.Wrap(err, msg),
+				message: msg,
+			},
 		)
 		return
 	}
 
+	h.respond.JSON(ctx, w, http.StatusOK, toAreasResponse(areas))
+}
+
+// toAreasResponse converts a cantabular.GetAreasResponse to a flattened contract.GetAreasResponse.
+func toAreasResponse(res *cantabular.GetAreasResponse) contract.GetAreasResponse {
 	var resp contract.GetAreasResponse
 
-	if res != nil {
-		for _, edge := range res.Dataset.RuleBase.IsSourceOf.CategorySearch.Edges {
+	for _, variable := range res.Dataset.RuleBase.IsSourceOf.Search.Edges {
+		for _, category := range variable.Node.Categories.Search.Edges {
 			resp.Areas = append(resp.Areas, model.Areas{
-				ID:       edge.Node.Code,
-				Label:    edge.Node.Label,
-				AreaType: edge.Node.Variable.Name,
+				ID:       category.Node.Code,
+				Label:    category.Node.Label,
+				AreaType: variable.Node.Name,
 			})
-
 		}
 	}
 
-	h.respond.JSON(ctx, w, http.StatusOK, resp)
+	return resp
 }
