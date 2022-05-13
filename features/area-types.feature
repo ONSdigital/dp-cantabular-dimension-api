@@ -18,6 +18,7 @@ Feature: Area Types
           "dataset":{
             "ruleBase":{
               "isSourceOf":{
+                "totalCount": 2,
                 "edges":[
                   {
                     "node":{
@@ -66,16 +67,20 @@ Feature: Area Types
       {
         "area-types":[
           {
-            "id":"country",
-            "label":"Country",
+            "id": "country",
+            "label": "Country",
             "total_count": 2
           },
           {
-            "id":"city",
-            "label":"City",
+            "id": "city",
+            "label": "City",
             "total_count": 3
           }
-        ]
+        ],
+        "limit": 20,
+        "offset": 0,
+        "count": 2,
+        "total_count": 2
       }
       """
 
@@ -91,6 +96,7 @@ Feature: Area Types
           "dataset":{
             "ruleBase":{
               "isSourceOf":{
+                "totalCount": 2,
                 "edges":[
                   {
                     "node":{
@@ -103,9 +109,9 @@ Feature: Area Types
                           "edges":[
                             {
                               "node":{
-                                "filterOnly":"false",
-                                "label":"City",
-                                "name":"city"
+                                "filterOnly": "false",
+                                "label": "City",
+                                "name": "city"
                               }
                             }
                           ]
@@ -119,9 +125,9 @@ Feature: Area Types
                       "categories":{
                         "totalCount":3
                       },
-                      "label":"City",
-                      "mapFrom":[],
-                      "name":"city"
+                      "label": "City",
+                      "mapFrom": [],
+                      "name": "city"
                     }
                   }
                 ]
@@ -140,16 +146,20 @@ Feature: Area Types
       {
         "area-types":[
           {
-            "id":"country",
-            "label":"Country",
+            "id": "country",
+            "label": "Country",
             "total_count": 2
           },
           {
-            "id":"city",
-            "label":"City",
+            "id": "city",
+            "label": "City",
             "total_count": 3
           }
-        ]
+        ],
+        "limit": 20,
+        "offset": 0,
+        "count": 2,
+        "total_count": 2
       }
       """
 
@@ -193,3 +203,82 @@ Feature: Area Types
       """
 
     And the HTTP status code should be "404"
+
+  Scenario: Getting area-types invalid query parameters
+
+    When the following geography query response is available from Cantabular api extension for the dataset "Example":
+      """
+      {
+        "data":{
+          "dataset":{
+            "ruleBase":{
+              "isSourceOf":{
+                "totalCount": 2,
+                "edges":[
+                  {
+                    "node":{
+                      "categories":{
+                        "totalCount":2
+                      },
+                      "label":"Country",
+                      "mapFrom":[
+                        {
+                          "edges":[
+                            {
+                              "node":{
+                                "filterOnly":"false",
+                                "label":"City",
+                                "name":"city"
+                              }
+                            }
+                          ]
+                        }
+                      ],
+                      "name":"country"
+                    }
+                  },
+                  {
+                    "node":{
+                      "categories":{
+                        "totalCount":3
+                      },
+                      "label":"City",
+                      "mapFrom":[],
+                      "name":"city"
+                    }
+                  }
+                ]
+              },
+              "name":"city"
+            }
+          }
+        }
+      }
+    
+      """
+
+    When I GET "/area-types?dataset=Example&limit=-1"
+    
+    Then I should receive the following JSON response:
+      """
+      {
+        "errors":[
+          "failed to parse request: invalid request: 'limit' cannot be a negative value"
+        ]
+      }
+      """
+
+    And the HTTP status code should be "400"
+
+    When I GET "/area-types?dataset=Example&offset=-1"
+    
+    Then I should receive the following JSON response:
+      """
+      {
+        "errors":[
+          "failed to parse request: invalid request: 'offset' cannot be a negative value"
+        ]
+      }
+      """
+
+    And the HTTP status code should be "400"

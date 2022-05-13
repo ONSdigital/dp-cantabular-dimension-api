@@ -42,7 +42,7 @@ func (h *Hello) Create(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	var req contract.CreateHelloRequest
 
-	if err := parseRequest(r.Body, &req); err != nil {
+	if err := parseRequest(r, &req); err != nil {
 		h.respond.Error(
 			ctx,
 			w,

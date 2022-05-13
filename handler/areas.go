@@ -1,13 +1,12 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/ONSdigital/dp-api-clients-go/v2/cantabular"
 	"github.com/ONSdigital/dp-cantabular-dimension-api/contract"
 	"github.com/ONSdigital/dp-cantabular-dimension-api/model"
-	dperrors "github.com/ONSdigital/dp-net/v2/errors"
-	"github.com/gorilla/schema"
 
 	"github.com/pkg/errors"
 )
@@ -30,40 +29,54 @@ func NewAreas(r responder, c cantabularClient) *Areas {
 func (h *Areas) Get(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	var req cantabular.QueryData
-	if err := schema.NewDecoder().Decode(&req, r.URL.Query()); err != nil {
+	var req contract.GetAreasRequest
+	if err := parseRequest(r, &req); err != nil {
 		h.respond.Error(
 			ctx,
 			w,
 			http.StatusBadRequest,
-			errors.Wrap(err, "failed to decode query parameters"),
+			fmt.Errorf("failed to parse request: %w", err),
 		)
 		return
 	}
 
-	res, err := h.ctblr.GetAreas(ctx, req)
+	areaTypeReq := cantabular.GetAreasRequest{
+		Dataset:  req.Dataset,
+		Variable: req.AreaType,
+		Category: req.Text,
+	}
+
+	areas, err := h.ctblr.GetAreas(ctx, areaTypeReq)
 	if err != nil {
+		msg := "failed to get areas"
 		h.respond.Error(
 			ctx,
 			w,
-			dperrors.StatusCode(err), // Can be changed to ctblr.StatusCode(err) once added to Client
-			errors.Wrap(err, "failed to get areas"),
+			h.ctblr.StatusCode(err),
+			&Error{
+				err:     errors.Wrap(err, msg),
+				message: msg,
+			},
 		)
 		return
 	}
 
+	h.respond.JSON(ctx, w, http.StatusOK, toAreasResponse(areas))
+}
+
+// toAreasResponse converts a cantabular.GetAreasResponse to a flattened contract.GetAreasResponse.
+func toAreasResponse(res *cantabular.GetAreasResponse) contract.GetAreasResponse {
 	var resp contract.GetAreasResponse
 
-	if res != nil {
-		for _, edge := range res.Dataset.RuleBase.IsSourceOf.CategorySearch.Edges {
+	for _, variable := range res.Dataset.RuleBase.IsSourceOf.Search.Edges {
+		for _, category := range variable.Node.Categories.Search.Edges {
 			resp.Areas = append(resp.Areas, model.Areas{
-				ID:       edge.Node.Code,
-				Label:    edge.Node.Label,
-				AreaType: edge.Node.Variable.Name,
+				ID:       category.Node.Code,
+				Label:    category.Node.Label,
+				AreaType: variable.Node.Name,
 			})
-
 		}
 	}
 
-	h.respond.JSON(ctx, w, http.StatusOK, resp)
+	return resp
 }

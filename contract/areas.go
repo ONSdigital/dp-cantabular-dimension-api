@@ -6,6 +6,7 @@ import "github.com/ONSdigital/dp-cantabular-dimension-api/model"
 type GetAreasRequest struct {
 	Dataset  string `schema:"dataset"`
 	AreaType string `schema:"area-type"`
+	Text     string `schema:"text"`
 }
 
 // GetAreasResponse is the response object for GET /areas

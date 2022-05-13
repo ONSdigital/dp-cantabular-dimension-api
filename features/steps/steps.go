@@ -6,6 +6,7 @@ import (
 
 	"github.com/ONSdigital/dp-api-clients-go/v2/cantabular"
 	"github.com/cucumber/godog"
+	"github.com/pkg/errors"
 )
 
 func (c *Component) RegisterSteps(ctx *godog.ScenarioContext) {
@@ -17,7 +18,7 @@ func (c *Component) RegisterSteps(ctx *godog.ScenarioContext) {
 	ctx.Step(`^the following geography query response is available from Cantabular api extension for the dataset "([^"]*)":$`, c.theFollowingCantabularResponseIsAvailable)
 	ctx.Step(`^the following error json response is returned from Cantabular api extension for the dataset "([^"]*)":$`, c.theFollowingCantabularResponseIsAvailable)
 	ctx.Step(`^the following area query response is available from Cantabular api extension for the dataset "([^"]*)":$`, c.theFollowingCantabularAreaResponseIsAvailable)
-	ctx.Step(`^the following area query response is available from Cantabular api extension for the dataset "([^"]*)" and text "([^"]*)":$`, c.theFollowingCantabularAreaTextResponseIsAvailable)
+	ctx.Step(`^the following area query response is available from Cantabular api extension for the dataset "([^"]*)", area type "([^"]*)" and text "([^"]*)":$`, c.theFollowingCantabularFilteredAreaResponseIsAvailable)
 
 }
 
@@ -86,9 +87,9 @@ func (c *Component) theFollowingCantabularAreaResponseIsAvailable(dataset string
 		Dataset: dataset,
 	}
 
-	b, err := data.Encode(cantabular.QueryAreasByArea)
+	b, err := data.Encode(cantabular.QueryAreas)
 	if err != nil {
-		return fmt.Errorf("failed to encode GraphQL query: %w", err)
+		return errors.Wrap(err, "failed to encode GraphQL query")
 	}
 
 	// create graphql handler with expected query body
@@ -101,15 +102,16 @@ func (c *Component) theFollowingCantabularAreaResponseIsAvailable(dataset string
 	return nil
 }
 
-func (c *Component) theFollowingCantabularAreaTextResponseIsAvailable(dataset string, text string, cb *godog.DocString) error {
+func (c *Component) theFollowingCantabularFilteredAreaResponseIsAvailable(dataset, areaType, text string, cb *godog.DocString) error {
 	data := cantabular.QueryData{
-		Dataset: dataset,
-		Text:    text,
+		Dataset:  dataset,
+		Text:     areaType,
+		Category: text,
 	}
 
-	b, err := data.Encode(cantabular.QueryAreasByArea)
+	b, err := data.Encode(cantabular.QueryAreas)
 	if err != nil {
-		return fmt.Errorf("failed to encode GraphQL query: %w", err)
+		return errors.Wrap(err, "failed to encode GraphQL query")
 	}
 
 	// create graphql handler with expected query body

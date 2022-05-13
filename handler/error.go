@@ -2,10 +2,9 @@ package handler
 
 // Error is the packages error type
 type Error struct {
-	err        error
-	message    string
-	statusCode int
-	logData    map[string]interface{}
+	err     error
+	message string
+	logData map[string]interface{}
 }
 
 // Error satisfies the standard library Go error interface
@@ -19,12 +18,6 @@ func (e Error) Error() string {
 // Unwrap implements the standard library Go unwrapper interface
 func (e Error) Unwrap() error {
 	return e.err
-}
-
-// Code satisfies the coder interface which is used to recover a
-// HTTP status code from an error
-func (e Error) Code() int {
-	return e.statusCode
 }
 
 // Message satisfies the messager interface which is used to specify
