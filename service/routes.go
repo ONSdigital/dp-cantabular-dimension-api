@@ -31,10 +31,8 @@ func (svc *Service) publicEndpoints(ctx context.Context) {
 	log.Info(ctx, "enabling public endpoints")
 
 	// Routes
-	areaTypes := handler.NewAreaTypes(svc.responder, svc.cantabularClient)
 	areas := handler.NewAreas(svc.responder, svc.cantabularClient)
 
-	svc.router.Get("/area-types", areaTypes.Get)
 	svc.router.Get("/areas", areas.Get)
 }
 
@@ -54,10 +52,8 @@ func (svc *Service) privateEndpoints(ctx context.Context) {
 	r.Use(middleware.LogIdentity())
 
 	// Routes
-	areaTypes := handler.NewAreaTypes(svc.responder, svc.cantabularClient)
 	areas := handler.NewAreas(svc.responder, svc.cantabularClient)
 
-	r.Get("/area-types", areaTypes.Get)
 	r.Get("/areas", areas.Get)
 
 	svc.router.Mount("/", r)
