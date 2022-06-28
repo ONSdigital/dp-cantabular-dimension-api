@@ -7,22 +7,6 @@ info:
 schemes:
 - "http"
 paths:
-  /areas:
-    get:
-      parameters:
-      - name: area-type
-        type: string
-        in: query
-        required: true
-      summary: "Get categories/values for given area type"
-      description: ""
-      produces:
-      - "application/json"
-      responses:
-        200:
-          description: "Categories for area type returned"
-          schema:
-            $ref: '#/definitions/GetAreasResponse'
   /dimensions:
     get:
       summary: "Get list of geography dimensions for given Dataset "
@@ -63,31 +47,6 @@ responses:
   BadGateway:
     description: "Failed to process the request due to an error in a downstream server"
 definitions:
-  GetAreasResponse:
-    description: "The response body containing areas for a given area type"
-    properties:
-      areas:
-        type: array
-        items:
-          $ref: '#/definitions/Area'
-        example: 
-        - id: "STJGGC1"
-          label: "St John's"
-          parent: "Bromsgrove"
-        - id: "STJAB34"
-          label: "St John's"
-          parent: "Fyide"
-        - id: "SB498GFF4"
-          label: "Southborough North"
-          parent: "Tunbridge Wells"
-  Area:
-    properties:
-      id:
-        type: string
-      label:
-        type: string
-      parent:
-        type: string
   GetDimensionsResponse:
     description: "The response body containing dimensions for a given dataset"
     properties:

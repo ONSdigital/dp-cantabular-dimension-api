@@ -31,9 +31,10 @@ func (svc *Service) publicEndpoints(ctx context.Context) {
 	log.Info(ctx, "enabling public endpoints")
 
 	// Routes
-	areas := handler.NewAreas(svc.responder, svc.cantabularClient)
+	hello := handler.NewHello(svc.responder, svc.cantabularClient)
 
-	svc.router.Get("/areas", areas.Get)
+	svc.router.Get("/hello", hello.Get)
+	svc.router.Post("/hello", hello.Create)
 }
 
 func (svc *Service) privateEndpoints(ctx context.Context) {
@@ -51,10 +52,9 @@ func (svc *Service) privateEndpoints(ctx context.Context) {
 	r.Use(checkIdentity)
 	r.Use(middleware.LogIdentity())
 
-	// Routes
-	areas := handler.NewAreas(svc.responder, svc.cantabularClient)
-
-	r.Get("/areas", areas.Get)
+	hello := handler.NewHello(svc.responder, svc.cantabularClient)
+	r.Get("/hello", hello.Get)
+	r.Post("/hello", permissions.RequireCreate(hello.Create))
 
 	svc.router.Mount("/", r)
 }
