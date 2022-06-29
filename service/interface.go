@@ -44,7 +44,6 @@ type Responder interface {
 type CantabularClient interface {
 	GetCodebook(context.Context, cantabular.GetCodebookRequest) (*cantabular.GetCodebookResponse, error)
 	GetGeographyDimensions(context.Context, cantabular.GetGeographyDimensionsRequest) (*cantabular.GetGeographyDimensionsResponse, error)
-	GetAreas(ctx context.Context, req cantabular.GetAreasRequest) (*cantabular.GetAreasResponse, error)
 	Checker(context.Context, *healthcheck.CheckState) error
 	CheckerAPIExt(ctx context.Context, state *healthcheck.CheckState) error
 	StatusCode(error) int
