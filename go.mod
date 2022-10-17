@@ -4,9 +4,7 @@ go 1.19
 
 replace github.com/coreos/etcd => github.com/coreos/etcd v3.3.24+incompatible
 
-replace github.com/prometheus/client_golang => github.com/prometheus/client_golang v1.11.1
-
-replace golang.org/x/text => golang.org/x/text v0.3.8
+replace github.com/prometheus/client_golang => github.com/prometheus/client_golang v1.13.0
 
 require (
 	github.com/ONSdigital/dp-api-clients-go/v2 v2.181.1
