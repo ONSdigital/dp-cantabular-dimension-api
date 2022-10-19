@@ -6,8 +6,6 @@ replace github.com/coreos/etcd => github.com/coreos/etcd v3.3.24+incompatible
 
 replace github.com/prometheus/client_golang => github.com/prometheus/client_golang v1.13.0
 
-replace golang.org/x/text => golang.org/x/text v0.3.8
-
 require (
 	github.com/ONSdigital/dp-api-clients-go/v2 v2.181.1
 	github.com/ONSdigital/dp-authorisation v0.2.0
@@ -78,6 +76,6 @@ require (
 	golang.org/x/net v0.0.0-20220812174116-3211cb980234 // indirect
 	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4 // indirect
 	golang.org/x/sys v0.0.0-20220811171246-fbc7d0a398ab // indirect
-	golang.org/x/text v0.3.7 // indirect
+	golang.org/x/text v0.3.8 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
