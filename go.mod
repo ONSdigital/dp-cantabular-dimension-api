@@ -1,8 +1,10 @@
 module github.com/ONSdigital/dp-cantabular-dimension-api
 
-go 1.17
+go 1.19
 
 replace github.com/coreos/etcd => github.com/coreos/etcd v3.3.24+incompatible
+
+replace github.com/prometheus/client_golang => github.com/prometheus/client_golang v1.13.0
 
 require (
 	github.com/ONSdigital/dp-api-clients-go/v2 v2.181.1
@@ -45,7 +47,6 @@ require (
 	github.com/fatih/color v1.13.0 // indirect
 	github.com/gofrs/uuid v4.2.0+incompatible // indirect
 	github.com/golang/snappy v0.0.4 // indirect
-	github.com/google/go-cmp v0.5.7 // indirect
 	github.com/gopherjs/gopherjs v1.17.2 // indirect
 	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/gorilla/schema v1.2.0
@@ -75,6 +76,6 @@ require (
 	golang.org/x/net v0.0.0-20220812174116-3211cb980234 // indirect
 	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4 // indirect
 	golang.org/x/sys v0.0.0-20220811171246-fbc7d0a398ab // indirect
-	golang.org/x/text v0.3.7 // indirect
+	golang.org/x/text v0.3.8 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
