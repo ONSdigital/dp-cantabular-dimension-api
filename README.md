@@ -1,4 +1,7 @@
 # dp-cantabular-dimension-api
+
+⚠️ This repository will be archived in December 2022 as it is no longer in development. ⚠️
+
 A service providing endpoints for retrieving dimension and geography information for Cantabular datasets
 
 ### Getting started
